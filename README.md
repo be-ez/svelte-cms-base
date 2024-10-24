@@ -107,19 +107,17 @@ You can use Directus either online or locally using Docker.
 
 1. Create a `.env` file in the root directory with the following variables:
 
-```
+```sh
 DIRECTUS_SECRET=''
 DIRECTUS_ADMIN_EMAIL=''
 DIRECTUS_ADMIN_PASSWORD=''
 ```
 
-````
-
 2. Run the following command to start Directus:
 
 ```bash
 docker-compose up -d
-````
+```
 
 3. Access Directus at `http://localhost:8055` and set up your project.
 4. Update your `.env` file with the following values:
