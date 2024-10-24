@@ -1,0 +1,19 @@
+version: '3'
+services:
+  directus:
+    image: directus/directus:11.1.1
+    ports:
+      - 8055:8055
+    volumes:
+      - ./cms/database:/directus/database
+      - ./cms/uploads:/directus/uploads
+      - ./cms/extensions:/directus/extensions
+    environment:
+      SECRET: 'dugw3fkovpdf884902*^%fqFDF'
+      # CORS_ENABLED: "true"
+      # CORS_ORIGIN: "*"
+      ADMIN_EMAIL: 'a@xn--4qe.com'
+      ADMIN_PASSWORD: 'doofas'
+      DB_CLIENT: 'sqlite3'
+      DB_FILENAME: '/directus/database/data.db'
+      WEBSOCKETS_ENABLED: 'true'

@@ -1,0 +1,81 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+	:root {
+		--background-color: #ffffff;
+		--text-color: #1a1a1a;
+	}
+
+	[data-theme='dark'] {
+		--background-color: #1f2937;
+		--text-color: #ffffff;
+	}
+
+	html {
+		@apply h-full;
+		background-color: var(--background-color);
+		color: var(--text-color);
+		transition:
+			background-color 200ms ease-in-out,
+			color 200ms ease-in-out;
+	}
+
+	body {
+		@apply h-full m-0 p-0;
+		background-color: var(--background-color);
+		transition:
+			background-color 200ms ease-in-out,
+			color 200ms ease-in-out;
+	}
+}
+
+/* Font utilities */
+.font-inter {
+	font-family: var(--font-primary);
+	font-weight: var(--font-weight-light);
+}
+
+.font-inter-heavy {
+	font-family: var(--font-primary);
+	font-weight: var(--font-weight-heavy);
+}
+
+.font-inter-medium {
+	font-family: var(--font-primary);
+	font-weight: var(--font-weight-medium);
+}
+
+@layer components {
+	.nav-link {
+		@apply text-default transition-colors;
+	}
+	.nav-link:hover {
+		@apply text-accent;
+	}
+
+	.nav-border {
+		@apply border-default;
+	}
+
+	.table-header {
+		@apply bg-surface-hover text-subtle;
+	}
+
+	.table-body {
+		@apply bg-surface text-default;
+	}
+
+	.table-row {
+		@apply border-default hover:bg-surface-hover;
+	}
+
+	.post-row {
+		@apply hover:bg-surface cursor-pointer;
+	}
+
+	.post-meta {
+		@apply text-muted font-inter-medium;
+	}
+}
