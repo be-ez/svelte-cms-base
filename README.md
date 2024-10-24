@@ -1,6 +1,6 @@
-# SvelteKit Portfolio Base
+# SvelteKit CMS Base
 
-A modern, full-featured SvelteKit base project for building portfolio websites. This template includes everything you need to build a performant, content-driven website with a great developer experience.
+A modern, full-featured SvelteKit base project for building portfolio websites. This template includes a skeleton to build a performant, content-driven website with a great developer experience.
 
 ## Features
 
@@ -82,17 +82,52 @@ Visit `http://localhost:5173` to see your application.
 The project includes an automated image pipeline that:
 
 - Processes images from Directus
-- Generates optimized versions
+- Generates optimized versions in multiple sizes
 - Caches results for better performance
 
 ### Content Management
 
 Content is managed through Directus CMS. The project supports multiple content types:
 
-- Blog posts
+- Markdown posts
 - Photo galleries
-- Recipes
 - Custom pages
+
+## Using Directus
+
+You can use Directus either online or locally using Docker.
+
+### Using Directus Online
+
+1. Sign up for a Directus account at [Directus Cloud](https://directus.cloud/).
+2. Create a new project and obtain your API URL and token.
+3. Update your `.env` file with the obtained values.
+
+### Using Directus with Docker
+
+1. Create a `.env` file in the root directory with the following variables:
+
+```
+DIRECTUS_SECRET=''
+DIRECTUS_ADMIN_EMAIL=''
+DIRECTUS_ADMIN_PASSWORD=''
+```
+
+````
+
+2. Run the following command to start Directus:
+
+```bash
+docker-compose up -d
+````
+
+3. Access Directus at `http://localhost:8055` and set up your project.
+4. Update your `.env` file with the following values:
+
+```
+DIRECTUS_API_URL=http://localhost:8055
+DIRECTUS_TOKEN=your_generated_token
+```
 
 ## Deployment
 
