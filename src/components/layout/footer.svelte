@@ -8,6 +8,7 @@
 	];
 </script>
 
+o
 <footer class="bg-background py-1 nav-border border-t items-center">
 	<div class="container mx-auto flex flex-col md:flex-row justify-between items-center px-2">
 		<div class="flex space-x-4 md:my-2 md:my-0 justify-center items-center">
@@ -16,7 +17,7 @@
 					<a href="mailto:alex@shulman.dev" class="nav-link">📧</a>
 				</p>
 			</div>
-			{#each socials as social}
+			{#each socials as social (social.name)}
 				<a href={social.href} class="nav-link text-xs" target="_blank" rel="noopener noreferrer"
 					>{social.icon}</a
 				>
@@ -26,7 +27,7 @@
 			<ThemeToggle />
 		</div>
 		<div class="text-xs text-center md:text-right">
-			<p>© 2024</p>
+			<p>© 2025</p>
 		</div>
 	</div>
 </footer>

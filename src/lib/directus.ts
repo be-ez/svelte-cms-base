@@ -1,5 +1,6 @@
-import { createDirectus, rest, staticToken, readItems } from '@directus/sdk';
-import { DIRECTUS_TOKEN, DIRECTUS_API_URL } from '$env/static/private';
+import { createDirectus, readItems, rest, staticToken } from '@directus/sdk';
+
+import { DIRECTUS_API_URL, DIRECTUS_TOKEN } from '$env/static/private';
 
 type FetchType = typeof fetch;
 

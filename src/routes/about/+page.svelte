@@ -1,15 +1,17 @@
 <script lang="ts">
 	import SvelteMarkdown from 'svelte-markdown';
-	import Image from '../../components/utils/image.svelte';
-	import customHeading from '../../components/utils/customHeading.svelte';
-	import customCode from '../../components/utils/customCode.svelte';
+
+	import type { DirectusSchema } from '$lib/directus';
+
+	import DefaultPage from '../../components/layout/defaultPage.svelte';
 	import customTable from '../../components/table/customTable.svelte';
 	import customTableBody from '../../components/table/customTableBody.svelte';
 	import customTableCell from '../../components/table/customTableCell.svelte';
 	import CustomTableHead from '../../components/table/customTableHead.svelte';
 	import customTableRow from '../../components/table/customTableRow.svelte';
-	import DefaultPage from '../../components/layout/defaultPage.svelte';
-	import type { DirectusSchema } from '$lib/directus';
+	import customCode from '../../components/utils/customCode.svelte';
+	import customHeading from '../../components/utils/customHeading.svelte';
+	import Image from '../../components/utils/image.svelte';
 
 	type Secret = DirectusSchema['secret_files'];
 
@@ -25,7 +27,7 @@
 	};
 
 	export let data: { secrets: Secret[] };
-	export let password = '';
+	let password = '';
 	let isUnlocked = false;
 	let secret: Secret = {
 		id: '',
@@ -58,7 +60,7 @@
 					<div class="resume-section">
 						<div class="md:text-xl">Attachments</div>
 						<ul>
-							{#each secret.files as file}
+							{#each secret.files as file (file.directus_files_id.id)}
 								<a href="/assets/{file.directus_files_id.id}?download" download>
 									{file.directus_files_id.filename_download}</a
 								>

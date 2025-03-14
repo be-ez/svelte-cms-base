@@ -1,6 +1,7 @@
-import 'inter-ui/inter-display-latin.css';
-import { theme } from '$lib/stores/theme';
 import { browser } from '$app/environment';
+import { theme } from '$lib/stores/theme';
+
+import 'inter-ui/inter-display-latin.css';
 
 export const load = () => {
 	if (browser) {

@@ -16,7 +16,7 @@
 <button
 	class="post-row w-full flex text-left bg-transparent hover:bg-gray-50 transition-colors duration-200"
 	on:click={handleClick}
-	on:keydown={(e) => e.key === 'Enter' && handleClick()}
+	on:keydown={e => e.key === 'Enter' && handleClick()}
 >
 	<div class="post-title border-b pl-3 text-left flex-1">
 		{post.title}

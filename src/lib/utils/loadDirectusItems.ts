@@ -1,5 +1,6 @@
-import getDirectusInstance from '$lib/directus';
 import { readItems } from '@directus/sdk';
+
+import getDirectusInstance from '$lib/directus';
 
 type FetchType = typeof fetch;
 

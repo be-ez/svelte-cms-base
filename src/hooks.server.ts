@@ -1,6 +1,7 @@
 import type { Handle } from '@sveltejs/kit';
+
+import { DIRECTUS_API_URL, DIRECTUS_TOKEN } from '$env/static/private';
 import { buildImagePipeline, shouldRegenerateAssets } from '$lib/image-pipeline';
-import { DIRECTUS_TOKEN, DIRECTUS_API_URL } from '$env/static/private';
 
 let initializationPromise: Promise<void> | null = null;
 
@@ -10,11 +11,11 @@ async function ensureAssets() {
 			try {
 				const needsRegeneration = await shouldRegenerateAssets();
 				if (needsRegeneration) {
-					console.log('Assets missing or incomplete, starting image pipeline...');
+					console.warn('Assets missing or incomplete, starting image pipeline...');
 					await buildImagePipeline(DIRECTUS_API_URL, DIRECTUS_TOKEN);
-					console.log('Image pipeline completed successfully');
+					console.warn('Image pipeline completed successfully');
 				} else {
-					console.log('Assets already exist, skipping image pipeline');
+					console.warn('Assets already exist, skipping image pipeline');
 				}
 			} catch (error) {
 				console.error('Error during asset initialization:', error);
@@ -35,7 +36,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	return await resolve(event, {
-		filterSerializedResponseHeaders: (key) => {
+		filterSerializedResponseHeaders: key => {
 			return key.toLowerCase() === 'content-type';
 		}
 	});

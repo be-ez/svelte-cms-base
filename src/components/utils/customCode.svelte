@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Highlight from 'svelte-highlight';
-	import python from 'svelte-highlight/languages/python';
 	import javascript from 'svelte-highlight/languages/javascript';
+	import python from 'svelte-highlight/languages/python';
 	import typescript from 'svelte-highlight/languages/typescript';
 	import atomOneDark from 'svelte-highlight/styles/atom-one-dark';
 

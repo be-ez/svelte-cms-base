@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import DesktopNavbar from '../navigation/DesktopNavbar.svelte';
 	import MobileNavbar from '../navigation/MobileNavbar.svelte';
-	import { onMount } from 'svelte';
 
 	let isMobile = false;
 	let mounted = false;

@@ -1,8 +1,9 @@
 import { readFiles } from '@directus/sdk';
-import sharp from 'sharp';
-import getDirectusInstance from './directus';
-import { mkdir, writeFile, access, readdir, readFile } from 'fs/promises';
+import { access, mkdir, readdir, readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
+import sharp from 'sharp';
+
+import getDirectusInstance from './directus';
 
 export interface ImageSizes {
 	thumbnail: { width: number };
@@ -65,7 +66,7 @@ async function downloadImage(
 	url: string,
 	token: string
 ): Promise<{ buffer: Buffer; contentType: string | null }> {
-	console.log('Downloading image from:', url);
+	console.warn('Downloading image from:', url);
 	const response = await fetch(url, {
 		headers: {
 			Authorization: `Bearer ${token}`
@@ -77,7 +78,7 @@ async function downloadImage(
 	}
 
 	const contentType = response.headers.get('content-type');
-	console.log('Image content type:', contentType);
+	console.warn('Image content type:', contentType);
 
 	const arrayBuffer = await response.arrayBuffer();
 	return {
@@ -94,7 +95,7 @@ async function processImage(
 ): Promise<ProcessedImage> {
 	// Get original metadata
 	const metadata = await sharp(buffer).metadata();
-	console.log(
+	console.warn(
 		'Processing image:',
 		filename,
 		'Format:',
@@ -139,7 +140,7 @@ async function processImage(
 						const rotation =
 							ORIENTATION_ROTATIONS[metadata.orientation as keyof typeof ORIENTATION_ROTATIONS];
 						if (rotation !== 0) {
-							console.log(
+							console.warn(
 								`Applying rotation of ${rotation}° for orientation ${metadata.orientation}`
 							);
 							pipeline = pipeline.rotate(rotation);
@@ -179,7 +180,7 @@ async function processImage(
 					}
 
 					await pipeline.toFile(outputPath);
-					console.log('Successfully processed:', outputFilename);
+					console.warn('Successfully processed:', outputFilename);
 					processedImage.sizes[sizeName as keyof ImageSizes][format] = outputFilename;
 				} catch (error) {
 					console.error(`Error processing ${outputFilename}:`, error);
@@ -196,7 +197,7 @@ async function processImage(
 }
 
 export async function shouldRegenerateAssets(): Promise<boolean> {
-	console.log('Checking if assets need regeneration...');
+	console.warn('Checking if assets need regeneration...');
 
 	const outputDir = 'static/images/processed';
 	const manifestPath = 'src/lib/image-manifest.json';
@@ -204,7 +205,7 @@ export async function shouldRegenerateAssets(): Promise<boolean> {
 	try {
 		const dirExists = await doesFileExist(outputDir);
 		if (!dirExists) {
-			console.log('Output directory does not exist');
+			console.warn('Output directory does not exist');
 			return true;
 		}
 
@@ -214,14 +215,14 @@ export async function shouldRegenerateAssets(): Promise<boolean> {
 			const manifestContent = await readFile(manifestPath, 'utf-8');
 			manifest = JSON.parse(manifestContent);
 		} catch (error) {
-			console.log('Failed to read manifest:', error);
+			console.warn('Failed to read manifest:', error);
 			return true;
 		}
 
 		// Get list of files in the output directory
 		const files = await readdir(outputDir);
 		if (files.length === 0) {
-			console.log('Output directory is empty');
+			console.warn('Output directory is empty');
 			return true;
 		}
 
@@ -231,14 +232,14 @@ export async function shouldRegenerateAssets(): Promise<boolean> {
 				for (const filename of Object.values(sizeFormats)) {
 					const exists = await doesFileExist(join(outputDir, filename));
 					if (!exists) {
-						console.log(`Missing file: ${filename}`);
+						console.warn(`Missing file: ${filename}`);
 						return true;
 					}
 				}
 			}
 		}
 
-		console.log('All assets verified successfully');
+		console.warn('All assets verified successfully');
 		return false;
 	} catch (error) {
 		console.error('Error checking assets:', error);
@@ -256,19 +257,19 @@ async function processBatch(
 	const batchResults = await Promise.all(
 		batch.map(async ({ id, url }) => {
 			try {
-				console.log('Processing file:', id);
+				console.warn('Processing file:', id);
 				const { buffer, contentType } = await downloadImage(url, token);
 
 				// Skip unsupported file types
 				if (!contentType || !SUPPORTED_MIME_TYPES.includes(contentType)) {
-					console.log(`Skipping unsupported file type: ${contentType}`);
+					console.warn(`Skipping unsupported file type: ${contentType}`);
 					return null;
 				}
 
 				const processedImage = await processImage(buffer, id, outputDir, url);
 				return { id, processedImage };
 			} catch (error) {
-				console.log(`Skipping file ${id} due to error:`, error);
+				console.warn(`Skipping file ${id} due to error:`, error);
 				return null;
 			}
 		})
@@ -286,10 +287,10 @@ async function processBatch(
 }
 
 export async function buildImagePipeline(apiUrl: string, token: string) {
-	console.log('Starting image pipeline...');
+	console.warn('Starting image pipeline...');
 	const directus = getDirectusInstance(fetch);
 	const files = await directus.request(readFiles({}));
-	console.log('Found files:', files.length);
+	console.warn('Found files:', files.length);
 
 	const outputDir = 'static/images/processed';
 	await ensureDir(outputDir);
@@ -300,7 +301,7 @@ export async function buildImagePipeline(apiUrl: string, token: string) {
 	// Prepare batches of images
 	const batches = [];
 	for (let i = 0; i < files.length; i += BATCH_SIZE) {
-		const batch = files.slice(i, i + BATCH_SIZE).map((file) => ({
+		const batch = files.slice(i, i + BATCH_SIZE).map(file => ({
 			id: file.id,
 			url: `${apiUrl}/assets/${file.id}`
 		}));
@@ -316,5 +317,5 @@ export async function buildImagePipeline(apiUrl: string, token: string) {
 	// Save the manifest
 	const manifestPath = 'src/lib/image-manifest.json';
 	await writeFile(manifestPath, JSON.stringify(processedImages, null, 2));
-	console.log('Image pipeline complete. Manifest saved to:', manifestPath);
+	console.warn('Image pipeline complete. Manifest saved to:', manifestPath);
 }

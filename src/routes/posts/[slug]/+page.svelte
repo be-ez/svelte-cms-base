@@ -2,16 +2,17 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 
-	import DefaultPage from '../../../components/layout/defaultPage.svelte';
 	import SvelteMarkdown from 'svelte-markdown';
-	import Image from '../../../components/utils/image.svelte';
-	import customHeading from '../../../components/utils/customHeading.svelte';
-	import customCode from '../../../components/utils/customCode.svelte';
+
+	import DefaultPage from '../../../components/layout/defaultPage.svelte';
 	import customTable from '../../../components/table/customTable.svelte';
 	import customTableBody from '../../../components/table/customTableBody.svelte';
 	import customTableCell from '../../../components/table/customTableCell.svelte';
 	import CustomTableHead from '../../../components/table/customTableHead.svelte';
 	import customTableRow from '../../../components/table/customTableRow.svelte';
+	import customCode from '../../../components/utils/customCode.svelte';
+	import customHeading from '../../../components/utils/customHeading.svelte';
+	import Image from '../../../components/utils/image.svelte';
 
 	const renderers = {
 		code: customCode,
@@ -27,7 +28,7 @@
 
 <DefaultPage title={data.post.title} subtitle={data.post.subtitle}>
 	<div>
-		{#each data.post.tags as tag}
+		{#each data.post.tags as tag (tag)}
 			<span class="tag">{tag}</span>
 		{/each}
 	</div>

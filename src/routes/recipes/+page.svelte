@@ -6,7 +6,7 @@
 
 <DefaultPage title="Recipes">
 	<ul>
-		{#each data.recipes as recipe}
+		{#each data.recipes as recipe (recipe.slug)}
 			<li>
 				- <a href={`/recipes/${recipe.slug}`}>{recipe.title}</a>
 			</li>

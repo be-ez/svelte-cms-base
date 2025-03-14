@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { pageTitle, pageSubtitle, showBackButton } from '$lib/stores/navigation';
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+
+	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 
 	export let title = '';
 	export let subtitle = '';

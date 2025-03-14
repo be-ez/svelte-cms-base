@@ -3,8 +3,9 @@
 Type definitions for Svelte
 -->
 <script lang="ts">
-	import type { DirectusSchema } from '$lib/directus';
 	import { onMount } from 'svelte';
+
+	import type { DirectusSchema } from '$lib/directus';
 	import { getProcessedImagePath } from '$lib/images';
 
 	export let data: { photo: DirectusSchema['photos'] };

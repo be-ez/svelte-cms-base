@@ -1,12 +1,14 @@
 import { writable } from 'svelte/store';
-import { lightTheme, darkTheme, type ThemeConfig } from '../theme/config';
+
 import { browser } from '$app/environment';
+
+import { darkTheme, lightTheme, type ThemeConfig } from '../theme/config';
 
 // Create a store for dark mode preference
 export const isDarkMode = {
 	...writable(browser ? localStorage.getItem('theme') === 'dark' : false),
 	toggle: function () {
-		this.update((n) => {
+		this.update(n => {
 			const newValue = !n;
 			if (browser) {
 				const newTheme = newValue ? 'dark' : 'light';
@@ -33,7 +35,7 @@ function createThemeStore() {
 
 	// Subscribe to dark mode changes
 	if (browser) {
-		isDarkMode.subscribe((isDark) => {
+		isDarkMode.subscribe(isDark => {
 			const newTheme = isDark ? darkTheme : lightTheme;
 			set(newTheme);
 			updateCssVariables(newTheme);
@@ -43,7 +45,7 @@ function createThemeStore() {
 	return {
 		subscribe,
 		update: (newTheme: Partial<ThemeConfig>) => {
-			update((theme) => ({ ...theme, ...newTheme }));
+			update(theme => ({ ...theme, ...newTheme }));
 			if (browser) {
 				updateCssVariables(newTheme);
 			}

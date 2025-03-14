@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	import { pageTitle, pageSubtitle, showBackButton } from '$lib/stores/navigation';
+
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 
 	let navItems = [
 		{ name: 'Recipes', icon: '🍲', href: '/recipes' },
 		{ name: 'Photos', icon: '📷', href: '/photos' },
 		{ name: 'Posts', icon: '💻', href: '/posts' }
 	];
-	const currentPath = derived(page, ($page) => $page.url.pathname);
+	const currentPath = derived(page, $page => $page.url.pathname);
 
 	function handleHeaderClick() {
 		goto('/');
@@ -20,7 +21,7 @@
 	<div
 		class="w-full text-left cursor-pointer"
 		on:click={handleHeaderClick}
-		on:keydown={(e) => e.key === 'Enter' && handleHeaderClick()}
+		on:keydown={e => e.key === 'Enter' && handleHeaderClick()}
 		role="button"
 		tabindex="0"
 	>
@@ -55,7 +56,7 @@
 
 				<!-- Right: Navigation -->
 				<div class="w-32 flex items-center justify-end gap-4">
-					{#each navItems as item, i}
+					{#each navItems as item, i (item.name)}
 						<a
 							href={item.href}
 							class="group relative px-5 w-6 h-6 flex items-center justify-center"

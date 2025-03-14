@@ -1,7 +1,9 @@
 <script lang="ts">
-	import DefaultPage from '../../components/layout/defaultPage.svelte';
 	import { onMount } from 'svelte';
+
 	import { getProcessedImagePath } from '$lib/images';
+
+	import DefaultPage from '../../components/layout/defaultPage.svelte';
 
 	interface Photo {
 		slug: string;
@@ -26,7 +28,7 @@
 	onMount(async () => {
 		try {
 			const processed = await Promise.all(
-				data.photos.map(async (photo) => ({
+				data.photos.map(async photo => ({
 					...photo,
 					processedPath: await getProcessedImagePath(photo.image, 'thumbnail')
 				}))
@@ -53,7 +55,7 @@
 			<div>Error loading images: {error.message}</div>
 		{:else}
 			<div class="photo-grid m-0 p-0" class:is-pinterest={isPinterestStyle}>
-				{#each processedPhotos as photo}
+				{#each processedPhotos as photo (photo.slug)}
 					<div class="photo-item m-0 p-0">
 						<a
 							href={photo ? `/photos/${encodeURIComponent(photo.slug)}` : ''}

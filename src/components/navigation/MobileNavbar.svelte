@@ -1,14 +1,15 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	import { pageTitle, pageSubtitle, showBackButton } from '$lib/stores/navigation';
+
+	import { page } from '$app/stores';
+	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 
 	let navItems = [
 		{ name: 'Recipes', icon: '🍲', href: '/recipes' },
 		{ name: 'Photos', icon: '📷', href: '/photos' },
 		{ name: 'Posts', icon: '💻', href: '/posts' }
 	];
-	const currentPath = derived(page, ($page) => $page.url.pathname);
+	const currentPath = derived(page, $page => $page.url.pathname);
 
 	let isOpen = false;
 
@@ -65,7 +66,7 @@
 
 		<!-- Dropdown Menu -->
 		<div class="menu {isOpen ? 'open' : ''}" role="menu" aria-hidden={!isOpen}>
-			{#each navItems as item}
+			{#each navItems as item (item.name)}
 				<a href={item.href} class="block nav-link py-2" on:click|stopPropagation role="menuitem">
 					<div class="flex justify-end">
 						<span

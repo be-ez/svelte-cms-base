@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { ProcessedImage } from '$lib/image-pipeline';
+
 	import manifest from '$lib/image-manifest.json';
+	import type { ProcessedImage } from '$lib/image-pipeline';
 
 	export let href = '';
 	export let title = undefined;

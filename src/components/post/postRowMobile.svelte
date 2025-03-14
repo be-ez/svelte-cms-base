@@ -16,7 +16,7 @@
 <button
 	class="post-row py-2 w-full flex flex-col items-start text-left bg-transparent hover:bg-gray-50 transition-colors duration-200"
 	on:click={handleClick}
-	on:keydown={(e) => e.key === 'Enter' && handleClick()}
+	on:keydown={e => e.key === 'Enter' && handleClick()}
 >
 	<div class="flex w-full items-center">
 		<div class="post-title font-inter-heavy">
