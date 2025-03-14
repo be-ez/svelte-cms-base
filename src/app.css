@@ -1,6 +1,7 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
 	:root {
@@ -23,7 +24,9 @@
 	}
 
 	body {
-		@apply h-full m-0 p-0;
+		@apply h-full;
+		margin: 0;
+		padding: 0;
 		background-color: var(--background-color);
 		transition:
 			background-color 200ms ease-in-out,
@@ -48,9 +51,10 @@
 }
 
 @layer components {
-	.nav-link {
+	/* .nav-link {
 		@apply text-default transition-colors;
 	}
+
 	.nav-link:hover {
 		@apply text-accent;
 	}
@@ -77,5 +81,5 @@
 
 	.post-meta {
 		@apply text-muted font-inter-medium;
-	}
+	} */
 }
