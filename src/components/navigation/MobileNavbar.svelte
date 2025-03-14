@@ -43,7 +43,7 @@
 								&#8592;
 							</button>
 						{/if}
-						<div class="text-xl font-inter-heavy text-default truncate max-w-[150px]">
+						<div class="text-xl font-inter-heavy text-default truncate max-w-[250px]">
 							{$pageTitle}
 						</div>
 					</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	/** @type {import('./$types').PageData} */
 	export let data;
-	import SvelteMarkdown from 'svelte-markdown';
+	import SvelteMarkdown from '@humanspeak/svelte-markdown';
 
 	import DefaultPage from '../../../components/layout/defaultPage.svelte';
 	import customTable from '../../../components/table/customTable.svelte';

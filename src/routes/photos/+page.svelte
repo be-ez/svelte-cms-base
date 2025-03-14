@@ -27,6 +27,7 @@
 	let loading = true;
 	let error: Error | null = null;
 	let gridItems: GridItem[] = [];
+	let isPinterestStyle = true;
 
 	onMount(async () => {
 		try {
@@ -47,5 +48,5 @@
 </script>
 
 <DefaultPage title="Photos">
-	<PhotoGrid items={gridItems} {loading} {error} itemType="photo" />
+	<PhotoGrid items={gridItems} {loading} {error} itemType="photo" {isPinterestStyle} />
 </DefaultPage>

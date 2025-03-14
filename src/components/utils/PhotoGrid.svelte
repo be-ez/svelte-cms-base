@@ -8,16 +8,10 @@
 	export let loading = false;
 	export let error: Error | null = null;
 	export let itemType = 'item';
-
-	let isPinterestStyle = true;
+	export let isPinterestStyle = true;
 </script>
 
 <div class="m-0 p-0">
-	<label class="m-0 p-0 inline-block">
-		<input type="checkbox" bind:checked={isPinterestStyle} />
-		Toggle Pinterest Style
-	</label>
-
 	{#if loading}
 		<div>Loading {itemType}s...</div>
 	{:else if error}
@@ -112,12 +106,6 @@
 		text-align: center;
 		padding: 1rem;
 		line-height: 1.2;
-	}
-
-	label {
-		display: inline-block;
-		margin: 0;
-		padding: 0;
 	}
 
 	@media (min-width: 1025px) {
