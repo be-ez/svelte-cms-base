@@ -7,7 +7,8 @@ export default {
 			backgroundColor: {
 				page: 'var(--color-background)',
 				surface: 'var(--color-gray-100)',
-				'surface-hover': 'var(--color-gray-200)'
+				'surface-hover': 'var(--color-gray-200)',
+				'subtle-hover': 'var(--color-hoverSubtle)'
 			},
 			textColor: {
 				default: 'var(--color-primary)',

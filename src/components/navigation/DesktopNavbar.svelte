@@ -17,7 +17,7 @@
 	}
 </script>
 
-<nav class="w-full bg-page border-b nav-border">
+<nav class="desktop-navbar w-full bg-page border-b nav-border">
 	<div
 		class="w-full text-left cursor-pointer"
 		on:click={handleHeaderClick}
@@ -81,12 +81,13 @@
 					{/each}
 				</div>
 			</div>
-
-			{#if $pageSubtitle}
-				<div class="text-xl text-center text-muted font-inter-medium mt-1">
+			<div class="text-xl text-center text-muted font-inter-medium mt-1">
+				{#if $pageSubtitle}
 					{$pageSubtitle}
-				</div>
-			{/if}
+				{:else}
+					&nbsp;
+				{/if}
+			</div>
 		</div>
 	</div>
 </nav>

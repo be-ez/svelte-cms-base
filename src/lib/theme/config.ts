@@ -7,6 +7,7 @@ export const lightTheme = {
 		background: '#FFFFFF', // Background color
 		border: '#E5E7EB', // Border color (gray-300)
 		hover: '#2563EB', // Hover state color (blue-600)
+		hoverSubtle: '#E5E7EB', // Subtle hover state (gray-200)
 
 		// Gray scale
 		gray: {
@@ -52,6 +53,7 @@ export const darkTheme = {
 		background: '#1F2937', // Dark background
 		border: '#374151', // Darker border for dark mode
 		hover: '#3B82F6', // Hover state color
+		hoverSubtle: '#4B5563', // Subtle hover state (gray-300)
 
 		// Gray scale (inverted for dark mode)
 		gray: {

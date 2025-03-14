@@ -34,6 +34,31 @@
 	}
 }
 
+/* Navbar responsive styles */
+.desktop-navbar {
+	display: none;
+}
+
+@media (min-width: 769px) {
+	.desktop-navbar {
+		display: flex;
+	}
+
+	.mobile-navbar {
+		display: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.desktop-navbar {
+		display: none;
+	}
+
+	.mobile-navbar {
+		display: block;
+	}
+}
+
 /* Font utilities */
 .font-inter {
 	font-family: var(--font-primary);

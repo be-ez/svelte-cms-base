@@ -27,9 +27,9 @@
 </script>
 
 <DefaultPage title={data.post.title} subtitle={data.post.subtitle}>
-	<div>
+	<div class="flex flex-wrap gap-2 mt-4">
 		{#each data.post.tags as tag (tag)}
-			<span class="tag">{tag}</span>
+			<span class="tag bg-blue-500 text-white px-2 py-1 rounded">{tag}</span>
 		{/each}
 	</div>
 

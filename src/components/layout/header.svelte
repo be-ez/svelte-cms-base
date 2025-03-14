@@ -29,28 +29,3 @@
 		<DesktopNavbar />
 	{/if}
 {/if}
-
-<style>
-	/* Hide desktop navbar on mobile screens before JS loads */
-	:global(.desktop-navbar) {
-		display: none;
-	}
-
-	@media (min-width: 769px) {
-		:global(.desktop-navbar) {
-			display: flex;
-		}
-		:global(.mobile-navbar) {
-			display: none;
-		}
-	}
-
-	@media (max-width: 768px) {
-		:global(.desktop-navbar) {
-			display: none;
-		}
-		:global(.mobile-navbar) {
-			display: block;
-		}
-	}
-</style>

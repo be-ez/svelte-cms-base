@@ -14,19 +14,19 @@
 </script>
 
 <button
-	class="post-row w-full flex text-left bg-transparent hover:bg-gray-50 transition-colors duration-200"
+	class="post-row w-full flex text-left bg-transparent hover:bg-subtle-hover hover:shadow-sm hover:scale-[1.01] transition-all duration-200"
 	on:click={handleClick}
 	on:keydown={e => e.key === 'Enter' && handleClick()}
 >
-	<div class="post-title border-b pl-3 text-left flex-1">
+	<div class="post-title border-b border-default pl-3 text-left text-default flex-1">
 		{post.title}
 	</div>
 
-	<div class="post-subtitle border-b self-center flex-5 text-center">
+	<div class="post-subtitle border-b border-default self-center text-muted flex-5 text-center">
 		{post.subtitle}
 	</div>
 
-	<div class="post-date border-b pr-3 text-right flex-1">
+	<div class="post-date border-b border-default pr-3 text-right text-subtle flex-1">
 		{new Date(post.date_created).toLocaleDateString()}
 	</div>
 </button>
