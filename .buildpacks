@@ -1,2 +1,2 @@
-gliderlabs/herokuish:latest-24
+gliderlabs/herokuish
 https://github.com/dokku/buildpack-nginx
