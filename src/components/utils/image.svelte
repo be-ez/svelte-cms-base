@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import manifest from '$lib/image-manifest.json';
 	import type { ProcessedImage } from '$lib/image-pipeline';
+	import { getProcessedImagePath } from '$lib/images';
 
 	export let href = '';
 	export let title = undefined;
@@ -11,40 +11,54 @@
 	export let downloadable = true;
 
 	let imageId = '';
-	let processedImage: ProcessedImage | undefined;
+	let paths: {
+		thumbnail: { webp: string; jpg: string };
+		small: { webp: string; jpg: string };
+		medium: { webp: string; jpg: string };
+		large: { webp: string; jpg: string };
+		display: { webp: string; jpg: string };
+	} | null = null;
+	let originalUrl = href;
 
-	onMount(() => {
+	onMount(async () => {
 		// Extract the image ID from the href
 		const url = new URL(href);
 		imageId = url.pathname.split('/').pop() || '';
-		processedImage = (manifest as Record<string, ProcessedImage>)[imageId];
-	});
 
-	// Get paths for all sizes
-	$: paths = processedImage
-		? {
+		if (imageId) {
+			// Get paths for all sizes
+			paths = {
 				thumbnail: {
-					webp: `/images/processed/${processedImage.sizes.thumbnail.webp}`,
-					jpg: `/images/processed/${processedImage.sizes.thumbnail.jpg}`
+					webp: await getProcessedImagePath(imageId, 'thumbnail', 'webp'),
+					jpg: await getProcessedImagePath(imageId, 'thumbnail', 'jpg')
 				},
 				small: {
-					webp: `/images/processed/${processedImage.sizes.small.webp}`,
-					jpg: `/images/processed/${processedImage.sizes.small.jpg}`
+					webp: await getProcessedImagePath(imageId, 'small', 'webp'),
+					jpg: await getProcessedImagePath(imageId, 'small', 'jpg')
 				},
 				medium: {
-					webp: `/images/processed/${processedImage.sizes.medium.webp}`,
-					jpg: `/images/processed/${processedImage.sizes.medium.jpg}`
+					webp: await getProcessedImagePath(imageId, 'medium', 'webp'),
+					jpg: await getProcessedImagePath(imageId, 'medium', 'jpg')
 				},
 				large: {
-					webp: `/images/processed/${processedImage.sizes.large.webp}`,
-					jpg: `/images/processed/${processedImage.sizes.large.jpg}`
+					webp: await getProcessedImagePath(imageId, 'large', 'webp'),
+					jpg: await getProcessedImagePath(imageId, 'large', 'jpg')
 				},
 				display: {
-					webp: `/images/processed/${processedImage.sizes.display.webp}`,
-					jpg: `/images/processed/${processedImage.sizes.display.jpg}`
+					webp: await getProcessedImagePath(imageId, 'display', 'webp'),
+					jpg: await getProcessedImagePath(imageId, 'display', 'jpg')
 				}
+			};
+
+			// If the paths point to the original asset, use the href as the original URL
+			if (paths.display.webp.startsWith('/assets/')) {
+				originalUrl = href;
+			} else {
+				// Otherwise, use the original size path
+				originalUrl = await getProcessedImagePath(imageId, 'original', 'webp');
 			}
-		: null;
+		}
+	});
 
 	// Create srcset strings for each format
 	$: srcsetWebp = paths
@@ -66,12 +80,9 @@
 	// Define sizes attribute for responsive images
 	const sizes =
 		'(max-width: 400px) 400px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, (max-width: 1800px) 1800px, 2400px';
-
-	// Function to get the original URL
-	$: originalUrl = processedImage?.originalPath || href;
 </script>
 
-{#if downloadable && processedImage}
+{#if downloadable && paths}
 	<a href={originalUrl} download class="block hover:opacity-90 transition-opacity">
 		<picture>
 			<source type="image/webp" srcset={srcsetWebp} {sizes} />
@@ -87,10 +98,12 @@
 			/>
 		</picture>
 	</a>
-{:else}
+{:else if paths}
 	<picture>
 		<source type="image/webp" srcset={srcsetWebp} {sizes} />
 		<source type="image/jpeg" srcset={srcsetJpg} {sizes} />
 		<img src={paths?.thumbnail.jpg} {title} alt={text} loading="lazy" {sizes} srcset={srcsetJpg} />
 	</picture>
+{:else}
+	<img src={href} {title} alt={text} loading="lazy" />
 {/if}
