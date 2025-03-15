@@ -1,2 +1,2 @@
-https://github.com/gliderlabs/heroku-buildpack-herokuish
-https://github.com/dokku/buildpack-nginx
+https://github.com/heroku/heroku-buildpack-nodejs
+https://github.com/dokku/heroku-buildpack-nginx
