@@ -1,5 +1,8 @@
 # Build stage
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
+
+ENV DIRECTUS_API_URL=${DIRECTUS_API_URL}
+ENV DIRECTUS_API_TOKEN=${DIRECTUS_API_TOKEN}
 
 WORKDIR /app
 
