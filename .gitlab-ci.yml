@@ -13,7 +13,7 @@ test:
   script:
     - corepack enable
     - pnpm install
-    - pnpm run lint
+    - pnpm run lint:fix
     - pnpm run check
   only:
     - main
