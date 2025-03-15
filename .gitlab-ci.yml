@@ -12,9 +12,9 @@ test:
   stage: test
   script:
     - corepack enable
-    - yarn
-    - yarn run lint
-    - yarn run check
+    - pnpm install
+    - pnpm run lint
+    - pnpm run check
   only:
     - main
 

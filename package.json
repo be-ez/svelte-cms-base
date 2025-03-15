@@ -2,7 +2,6 @@
   "name": "personal",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@10.6.2",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && vite build",
@@ -28,7 +27,7 @@
     "@humanspeak/svelte-markdown": "^0.7.19",
     "@sveltejs/adapter-auto": "^4.0.0",
     "@sveltejs/adapter-static": "^3.0.8",
-    "@sveltejs/kit": "^2.19.0",
+    "@sveltejs/kit": "^2.19.1",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/postcss": "^4.0.14",
     "@tailwindcss/vite": "^4.0.14",
@@ -58,5 +57,11 @@
     "vite": "^6.2.2",
     "vite-imagetools": "^7.0.5"
   },
-  "type": "module"
+  "type": "module",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  }
 }

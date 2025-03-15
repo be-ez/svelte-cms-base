@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { derived } from 'svelte/store';
+	import { onMount } from 'svelte';
 
-	import { page } from '$app/stores';
 	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 
 	let navItems = [
@@ -9,7 +8,19 @@
 		{ name: 'Photos', icon: '📷', href: '/photos' },
 		{ name: 'Posts', icon: '💻', href: '/posts' }
 	];
-	const currentPath = derived(page, $page => $page.url.pathname);
+
+	let currentPath = '';
+
+	// Update currentPath when the component mounts and when the URL changes
+	onMount(() => {
+		updateCurrentPath();
+		window.addEventListener('popstate', updateCurrentPath);
+		return () => window.removeEventListener('popstate', updateCurrentPath);
+	});
+
+	function updateCurrentPath() {
+		currentPath = window.location.pathname;
+	}
 
 	let isOpen = false;
 
@@ -25,7 +36,7 @@
 			<div class="w-16">
 				<a
 					href="/about"
-					class="text-2xl font-bold nav-link {$currentPath === '/about' ? 'underline' : ''}"
+					class="text-2xl font-bold nav-link {currentPath === '/about' ? 'underline' : ''}"
 					on:click|stopPropagation>Alex</a
 				>
 			</div>
@@ -70,7 +81,7 @@
 				<a href={item.href} class="block nav-link py-2" on:click|stopPropagation role="menuitem">
 					<div class="flex justify-end">
 						<span
-							class="uppercase font-medium font-inter {$currentPath.startsWith(item.href)
+							class="uppercase font-medium font-inter {currentPath.startsWith(item.href)
 								? 'underline'
 								: ''}">{item.name}</span
 						><span class="text-xs ml-2">{item.icon}</span>
