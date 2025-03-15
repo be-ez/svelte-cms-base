@@ -1,2 +1,2 @@
-https://github.com/heroku/heroku-buildpack-nodejs
+heroku/builder:24
 https://github.com/dokku/buildpack-nginx
