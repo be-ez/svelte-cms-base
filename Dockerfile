@@ -8,6 +8,8 @@ ENV DIRECTUS_API_TOKEN=${DIRECTUS_API_TOKEN}
 
 WORKDIR /app
 
+RUN echo $DIRECTUS_API_URL
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
