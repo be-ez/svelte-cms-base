@@ -76,7 +76,7 @@ export default tseslint.config(
 			'svelte/no-at-html-tags': 'warn',
 			'svelte/valid-compile': 'error',
 			'svelte/no-unused-svelte-ignore': 'error',
-			'svelte/html-quotes': ['error', { prefer: 'single' }],
+			// 'svelte/html-quotes': ['error', { prefer: 'single' }],
 			'svelte/html-self-closing': 'error',
 			'svelte/shorthand-attribute': 'error',
 			'svelte/spaced-html-comment': 'error',
