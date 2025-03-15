@@ -15,10 +15,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,ts,svelte,css,scss,json,md}": "prettier --write",
+    "*.{css,scss,json,md}": "prettier --write",
     "*.{js,ts,svelte}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "git add"
     ]
   },
   "devDependencies": {
