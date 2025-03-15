@@ -24,4 +24,4 @@ vite.config.ts.timestamp-*
 cms/*
 
 static/images/
-src/lib/image-manifest.json
+src/lib/image-manifest.jsonstatic/image-manifest.json
