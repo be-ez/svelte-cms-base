@@ -201,6 +201,7 @@ export async function shouldRegenerateAssets(): Promise<boolean> {
 
 	const outputDir = 'static/images/processed';
 	const manifestPath = 'src/lib/image-manifest.json';
+	const publicManifestPath = 'static/image-manifest.json';
 
 	try {
 		const dirExists = await doesFileExist(outputDir);
@@ -209,11 +210,25 @@ export async function shouldRegenerateAssets(): Promise<boolean> {
 			return true;
 		}
 
-		// Check if manifest exists and can be read
+		// Check if manifests exist and can be read
 		let manifest: Record<string, ProcessedImage>;
 		try {
 			const manifestContent = await readFile(manifestPath, 'utf-8');
 			manifest = JSON.parse(manifestContent);
+
+			// Also check if public manifest exists
+			const publicManifestExists = await doesFileExist(publicManifestPath);
+			if (!publicManifestExists) {
+				console.warn('Public manifest does not exist');
+				return true;
+			}
+
+			// Check if manifest only contains placeholder entries
+			const keys = Object.keys(manifest);
+			if (keys.length === 0 || (keys.length === 1 && keys[0] === '__placeholder__')) {
+				console.warn('Manifest only contains placeholder entries');
+				return true;
+			}
 		} catch (error) {
 			console.warn('Failed to read manifest:', error);
 			return true;
@@ -314,8 +329,18 @@ export async function buildImagePipeline(apiUrl: string, token: string) {
 		Object.assign(processedImages, batchResults);
 	}
 
-	// Save the manifest
+	// Save the manifest to src/lib for imports
 	const manifestPath = 'src/lib/image-manifest.json';
 	await writeFile(manifestPath, JSON.stringify(processedImages, null, 2));
-	console.warn('Image pipeline complete. Manifest saved to:', manifestPath);
+
+	// Also save to static directory for fetch access
+	const publicManifestPath = 'static/image-manifest.json';
+	await writeFile(publicManifestPath, JSON.stringify(processedImages, null, 2));
+
+	console.warn(
+		'Image pipeline complete. Manifest saved to:',
+		manifestPath,
+		'and',
+		publicManifestPath
+	);
 }
