@@ -23,7 +23,7 @@ type ImageManifest = Record<string, ProcessedImage>;
 // Function to load manifest
 async function loadManifest(): Promise<ImageManifest> {
 	try {
-		// First try to fetch the manifest file using fetch API
+		// Fetch the manifest file using fetch API
 		const response = await fetch('/image-manifest.json');
 		if (!response.ok) {
 			throw new Error('Manifest file not found');
@@ -39,25 +39,9 @@ async function loadManifest(): Promise<ImageManifest> {
 		});
 
 		return manifest;
-	} catch (fetchError) {
-		try {
-			// Fallback to dynamic import if fetch fails
-			const manifestModule = await import('./image-manifest.json');
-			const rawManifest = manifestModule.default;
-
-			// Create a new manifest without placeholder entries
-			const manifest: ImageManifest = {};
-			Object.entries(rawManifest).forEach(([key, value]) => {
-				if (key !== '__placeholder__') {
-					manifest[key] = value as ProcessedImage;
-				}
-			});
-
-			return manifest;
-		} catch (importError) {
-			console.warn('Image manifest not found - will be generated during build');
-			return {};
-		}
+	} catch (error) {
+		console.warn('Image manifest not found - will be generated during build');
+		return {};
 	}
 }
 
