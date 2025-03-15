@@ -1,2 +1,2 @@
-heroku/builder:24
+gliderlabs/herokuish:latest-24
 https://github.com/dokku/buildpack-nginx
