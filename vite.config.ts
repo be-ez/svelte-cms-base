@@ -7,9 +7,9 @@ import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
 	plugins: [
+		enhancedImages(),
 		tailwindcss(),
 		sveltekit(),
-		enhancedImages(),
 		imagetools({
 			defaultDirectives: () => {
 				return new URLSearchParams({
