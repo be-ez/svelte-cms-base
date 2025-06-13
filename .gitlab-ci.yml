@@ -24,7 +24,7 @@ test:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main"'
 
-process-images:
+build-complete:
   stage: test
   image: docker:24
   services:
@@ -35,21 +35,21 @@ process-images:
     # Login to GitLab Container Registry
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
-    # Build x86_64-only image processor and push processed images
+    # Build x86_64-only complete build (images + static site) and push
     - |
       docker build \
         --platform linux/amd64 \
-        --target image-processor \
+        --target complete-build \
         --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
         --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
-        --build-arg PROCESSED_IMAGES_TAG=dummy \
-        --tag $CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
-        --tag $CI_REGISTRY_IMAGE:processed-images-latest \
+        --tag $CI_REGISTRY_IMAGE:complete-build-$CI_COMMIT_SHA \
+        --tag $CI_REGISTRY_IMAGE:complete-build-latest \
         .
-    - docker push $CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE:processed-images-latest
-  only:
-    - main
+    - docker push $CI_REGISTRY_IMAGE:complete-build-$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:complete-build-latest
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 build-docker:
   stage: build
@@ -68,13 +68,11 @@ build-docker:
     - docker buildx use mybuilder
     - docker buildx inspect --bootstrap
   script:
-    # Build and push multi-arch image using pre-processed images
+    # Build and push multi-arch nginx using complete build
     - |
       docker buildx build \
         --platform linux/amd64,linux/arm64 \
-        --build-context image-processor=docker-image://$CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
-        --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
-        --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
+        --build-context complete-build=docker-image://$CI_REGISTRY_IMAGE:complete-build-$CI_COMMIT_SHA \
         --build-arg CLOUDFLARE_TOKEN=$CLOUDFLARE_TOKEN \
         --build-arg CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID \
         --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:cache \

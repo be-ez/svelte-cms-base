@@ -26,3 +26,4 @@ cms/*
 static/images/
 src/lib/image-manifest.json
 static/image-manifest.json
+.claude/settings.local.json
