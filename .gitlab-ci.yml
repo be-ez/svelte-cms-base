@@ -73,6 +73,8 @@ build-docker:
       docker buildx build \
         --platform linux/amd64,linux/arm64 \
         --build-context image-processor=docker-image://$CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
+        --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
+        --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
         --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:cache \
         --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:cache,mode=max \
         --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA \
