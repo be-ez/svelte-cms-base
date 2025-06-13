@@ -36,7 +36,7 @@
 <SEO {title} {description} />
 
 <DefaultPage {title} subtitle={description}>
-	<div class="max-w-4xl mx-auto py-12">
+	<div class="max-w-4xl mx-auto">
 		{#if data.global?.Homepage_Content}
 			<div class="prose prose-lg mx-auto max-w-none" class:prose-invert={$isDarkMode}>
 				<Markdown md={data.global.Homepage_Content} {plugins} />

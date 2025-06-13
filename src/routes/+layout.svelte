@@ -15,7 +15,7 @@
 
 <div class="min-h-screen flex flex-col">
 	<Header />
-	<main id="main-content" class="flex-grow flex flex-col px-4 md:px-0" tabindex="-1">
+	<main id="main-content" class="flex-grow flex flex-col" tabindex="-1">
 		<slot></slot>
 	</main>
 	<Footer />

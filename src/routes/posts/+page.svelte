@@ -14,11 +14,9 @@
 />
 
 <DefaultPage title="Posts">
-	<div class="md:block">
-		<div class="mobile-posts">
-			{#each data.posts as post (post.id)}
-				<PostRowMobile {post} />
-			{/each}
-		</div>
+	<div class="space-y-2">
+		{#each data.posts as post (post.id)}
+			<PostRowMobile {post} />
+		{/each}
 	</div>
 </DefaultPage>

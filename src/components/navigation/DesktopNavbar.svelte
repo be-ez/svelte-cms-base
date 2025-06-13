@@ -26,7 +26,7 @@
 		tabindex="0"
 		aria-label="Go to homepage"
 	>
-		<div class="px-8 py-2">
+		<div class="px-8 py-4">
 			<div class="flex items-center justify-between">
 				<!-- Left: About -->
 				<div class="w-32">
@@ -63,7 +63,9 @@
 								&#8592;
 							</button>
 						{/if}
-						<div class="text-2xl font-inter-heavy text-default">{$pageTitle}</div>
+						<div class="text-2xl font-inter-heavy" style="color: var(--color-primary)">
+							{$pageTitle}
+						</div>
 					{/if}
 				</div>
 
@@ -95,7 +97,7 @@
 					{/each}
 				</div>
 			</div>
-			<div class="text-xl text-center text-muted font-inter-medium mt-1">
+			<div class="text-xl text-center font-inter-medium mt-2" style="color: var(--color-secondary)">
 				{#if $pageSubtitle}
 					{$pageSubtitle}
 				{:else}
