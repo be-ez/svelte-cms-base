@@ -44,9 +44,14 @@ buildImagePipeline(DIRECTUS_API_URL, DIRECTUS_TOKEN)\n\
     process.exit(1);\n\
   });' > process-images.mjs
 
-# Create static directory structure and run image processing
-RUN mkdir -p static/images/processed && \
-    node process-images.mjs
+# Create static directory structure first
+RUN mkdir -p static/images/processed
+
+# Run the image processing (this will be cached if Directus content hasn't changed)
+RUN node process-images.mjs
+
+# Verify the images were created
+RUN ls -la static/images/processed/ | head -5
 
 # Stage 2: Build the application
 FROM node:22-alpine AS build
@@ -65,17 +70,23 @@ COPY package*.json pnpm-lock.yaml ./
 COPY .pnpmfile.cjs ./
 RUN pnpm install --frozen-lockfile
 
-# Copy processed images from the previous stage
+# Copy the rest of the application code first
+COPY . .
+
+# Copy processed images from the previous stage (this will overwrite/merge with any static files)
 COPY --from=image-processor /app/static ./static
 
-# Copy the rest of the application code
-COPY . .
+# Verify images were copied
+RUN echo "📊 Images copied from stage 1:" && ls -la static/images/processed/ | wc -l
 
 # Skip image processing during build since we already have the images
 ENV SKIP_IMAGE_PROCESSING=true
 
 # Build the application (using build:only to skip image processing)
 RUN pnpm run build:only && node scripts/copy-static-assets.js
+
+# Verify final build has images
+RUN echo "📊 Final build images:" && ls -la build/images/processed/ | wc -l
 
 # Stage 3: Production
 FROM nginx:alpine
