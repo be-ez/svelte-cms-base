@@ -27,13 +27,8 @@ test:
 build-docker:
   stage: build
   image: docker:24
-  services:
-    - name: docker:24-dind
-      command: ["--tls=false"]
   variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: unix:///var/run/docker.sock
   script:
     # Login to GitLab Container Registry
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
