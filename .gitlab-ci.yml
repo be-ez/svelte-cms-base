@@ -1,8 +1,7 @@
 image: node:current-alpine
 
 stages:
-  - test
-  - build
+  - test-and-build
   - deploy
   - rebuild
 
@@ -10,7 +9,7 @@ variables:
   APP_NAME: personal
 
 test:
-  stage: test
+  stage: test-and-build
   variables:
     # Dummy env vars for svelte-check - not used in actual tests
     DIRECTUS_API_URL: "https://dummy.example.com"
@@ -25,7 +24,7 @@ test:
     - if: '$CI_COMMIT_BRANCH == "main"'
 
 build-docker:
-  stage: build
+  stage: test-and-build
   image: docker:24
   variables:
     DOCKER_HOST: unix:///var/run/docker.sock

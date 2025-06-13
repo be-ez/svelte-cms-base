@@ -44,8 +44,9 @@ buildImagePipeline(DIRECTUS_API_URL, DIRECTUS_TOKEN)\n\
     process.exit(1);\n\
   });' > process-images.mjs
 
-# Run the image processing (this will be cached if Directus content hasn't changed)
-RUN node process-images.mjs
+# Create static directory structure and run image processing
+RUN mkdir -p static/images/processed && \
+    node process-images.mjs
 
 # Stage 2: Build the application
 FROM node:22-alpine AS build
