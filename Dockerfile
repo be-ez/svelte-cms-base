@@ -10,13 +10,14 @@ WORKDIR /app
 
 RUN echo $DIRECTUS_API_URL
 
-# Copy package.json and package-lock.json
+# Copy package.json and pnpm files
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
+COPY .pnpmfile.cjs ./
 
 # Install dependencies
 RUN npm install -g pnpm
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
