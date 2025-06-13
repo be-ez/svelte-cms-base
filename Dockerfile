@@ -17,38 +17,14 @@ COPY .pnpmfile.cjs ./
 # Install dependencies (this layer will be cached if package.json doesn't change)
 RUN pnpm install --frozen-lockfile
 
-# Copy only the image processing related files
-COPY src/lib/directus.ts ./src/lib/
-COPY src/lib/image-config.ts ./src/lib/
-COPY src/lib/image-pipeline.ts ./src/lib/
-
-# Create a standalone script to run image processing
-RUN echo '#!/usr/bin/env node\n\
-import { buildImagePipeline } from "./src/lib/image-pipeline.js";\n\
-\n\
-const DIRECTUS_API_URL = process.env.DIRECTUS_API_URL;\n\
-const DIRECTUS_TOKEN = process.env.DIRECTUS_TOKEN;\n\
-\n\
-if (!DIRECTUS_API_URL || !DIRECTUS_TOKEN) {\n\
-  console.error("Missing DIRECTUS_API_URL or DIRECTUS_TOKEN");\n\
-  process.exit(1);\n\
-}\n\
-\n\
-console.log("🖼️  Processing images from Directus...");\n\
-buildImagePipeline(DIRECTUS_API_URL, DIRECTUS_TOKEN)\n\
-  .then(() => {\n\
-    console.log("✅ Image processing complete!");\n\
-  })\n\
-  .catch(error => {\n\
-    console.error("❌ Image processing failed:", error);\n\
-    process.exit(1);\n\
-  });' > process-images.mjs
+# Copy the standalone image processing script
+COPY scripts/process-images-standalone.cjs ./scripts/
 
 # Create static directory structure first
 RUN mkdir -p static/images/processed
 
 # Run the image processing (this will be cached if Directus content hasn't changed)
-RUN node process-images.mjs
+RUN node scripts/process-images-standalone.cjs
 
 # Verify the images were created
 RUN ls -la static/images/processed/ | head -5
