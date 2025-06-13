@@ -72,7 +72,7 @@ build-docker:
     - |
       docker buildx build \
         --platform linux/amd64,linux/arm64 \
-        --build-arg PROCESSED_IMAGES_TAG=$CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
+        --build-context image-processor=docker-image://$CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
         --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:cache \
         --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:cache,mode=max \
         --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA \

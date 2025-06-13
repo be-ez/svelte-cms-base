@@ -51,7 +51,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Copy processed images from the registry-cached image processor
-COPY --from=${PROCESSED_IMAGES_TAG} /app/static ./static
+COPY --from=image-processor /app/static ./static
 
 # Verify images were copied
 RUN echo "📊 Images copied from stage 1:" && ls -la static/images/processed/ | wc -l
