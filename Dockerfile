@@ -68,6 +68,15 @@ RUN echo "📊 Final build images:" && ls -la build/images/processed/ | wc -l
 # Stage 3: Production
 FROM nginx:alpine
 
+# Accept Cloudflare environment variables for cache purging
+ARG CLOUDFLARE_TOKEN
+ARG CLOUDFLARE_ZONE_ID
+ENV CLOUDFLARE_TOKEN=${CLOUDFLARE_TOKEN}
+ENV CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+
+# Install curl for Cloudflare cache purging
+RUN apk add --no-cache curl
+
 # Copy the built files from the build stage
 COPY --from=build /app/build /usr/share/nginx/html
 
