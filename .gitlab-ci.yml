@@ -83,8 +83,20 @@ build-docker:
         .
   only:
     - main
-# dokku-deploy:
-#   stage: deploy
+
+deploy-coolify:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl
+  script:
+    # Trigger Coolify deployment via API
+    - |
+      curl -X GET \
+        -H "Authorization: Bearer $COOLIFY_API_KEY" \
+        "$COOLIFY_API_URL"
+  only:
+    - main
 #   before_script:
 #     - apk update
 #     - apk add openssh-client git
