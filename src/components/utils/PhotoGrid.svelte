@@ -137,15 +137,15 @@
 
 	@media (min-width: 1025px) {
 		.photo-grid {
-			gap: 1rem;
+			gap: 1.5rem;
 		}
 
 		.photo-grid.is-pinterest {
-			column-gap: 1rem;
+			column-gap: 1.5rem;
 		}
 
 		.photo-grid.is-pinterest .photo-item {
-			margin-bottom: 1rem;
+			margin-bottom: 1.5rem;
 		}
 	}
 

@@ -20,6 +20,6 @@
 	});
 </script>
 
-<div class="mx-auto w-full p-0 md:px-8 xs:p-0">
+<div class="page-container content-spacing">
 	<slot></slot>
 </div>

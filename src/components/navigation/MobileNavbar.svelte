@@ -30,8 +30,8 @@
 </script>
 
 <nav class="mobile-navbar bg-page border-b nav-border">
-	<div class="px-2">
-		<div class="flex justify-between items-center h-full py-1">
+	<div class="px-6">
+		<div class="flex justify-between items-center h-full py-3">
 			<!-- Left side: About -->
 			<div class="w-16">
 				<a
@@ -66,7 +66,10 @@
 								&#8592;
 							</button>
 						{/if}
-						<div class="text-xl font-inter-heavy text-default truncate max-w-[250px]">
+						<div
+							class="text-xl font-inter-heavy truncate max-w-[250px]"
+							style="color: var(--color-primary)"
+						>
 							{$pageTitle}
 						</div>
 					</div>
@@ -90,7 +93,7 @@
 		<!-- Dropdown Menu -->
 		<div class="menu {isOpen ? 'open' : ''}" role="menu" aria-hidden={!isOpen}>
 			{#each navItems as item (item.name)}
-				<a href={item.href} class="block nav-link py-2" on:click|stopPropagation role="menuitem">
+				<a href={item.href} class="block nav-link py-3" on:click|stopPropagation role="menuitem">
 					<div class="flex justify-end">
 						<span
 							class="uppercase font-medium font-inter {currentPath.startsWith(item.href)
@@ -104,7 +107,12 @@
 	</div>
 
 	{#if $pageSubtitle}
-		<div class="text-lg text-center text-muted font-inter-medium pb-2 px-2">{$pageSubtitle}</div>
+		<div
+			class="text-lg text-center font-inter-medium pb-3 px-6"
+			style="color: var(--color-secondary)"
+		>
+			{$pageSubtitle}
+		</div>
 	{/if}
 </nav>
 
