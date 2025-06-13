@@ -12,8 +12,8 @@ test:
   stage: test-and-build
   variables:
     # Dummy env vars for svelte-check - not used in actual tests
-    DIRECTUS_API_URL: "https://dummy.example.com"
-    DIRECTUS_TOKEN: "dummy-token"
+    DIRECTUS_API_URL: 'https://dummy.example.com'
+    DIRECTUS_TOKEN: 'dummy-token'
   script:
     - corepack enable
     - pnpm install
@@ -33,7 +33,7 @@ build-docker:
   before_script:
     # Login to GitLab Container Registry
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    
+
     # Set up Docker Buildx for multi-platform builds
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - docker buildx create --name mybuilder --driver docker-container --bootstrap
@@ -54,7 +54,6 @@ build-docker:
         .
   only:
     - main
-
 # dokku-deploy:
 #   stage: deploy
 #   before_script:
