@@ -25,7 +25,7 @@ test:
     - if: '$CI_COMMIT_BRANCH == "main"'
 
 process-images:
-  stage: build
+  stage: test
   image: docker:24
   services:
     - docker:24-dind
@@ -52,7 +52,7 @@ process-images:
     - main
 
 build-docker:
-  stage: deploy
+  stage: build
   image: docker:24
   services:
     - docker:24-dind
