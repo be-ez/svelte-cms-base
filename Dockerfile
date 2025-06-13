@@ -31,6 +31,7 @@ RUN ls -la static/images/processed/ | head -5
 
 # Stage 2: Build the application
 FROM node:22-alpine AS build
+ARG PROCESSED_IMAGES_TAG
 ARG DIRECTUS_API_URL
 ARG DIRECTUS_TOKEN
 ENV DIRECTUS_API_URL=${DIRECTUS_API_URL}
@@ -49,8 +50,8 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the application code first
 COPY . .
 
-# Copy processed images from the previous stage (this will overwrite/merge with any static files)
-COPY --from=image-processor /app/static ./static
+# Copy processed images from the registry-cached image processor
+COPY --from=${PROCESSED_IMAGES_TAG} /app/static ./static
 
 # Verify images were copied
 RUN echo "📊 Images copied from stage 1:" && ls -la static/images/processed/ | wc -l

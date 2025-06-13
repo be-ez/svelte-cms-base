@@ -2,6 +2,7 @@ image: node:current-alpine
 
 stages:
   - test-and-build
+  - process-images
   - deploy
   - rebuild
 
@@ -23,8 +24,34 @@ test:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main"'
 
+process-images:
+  stage: process-images
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_HOST: unix:///var/run/docker.sock
+  before_script:
+    # Login to GitLab Container Registry
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    # Build x86_64-only image processor and push processed images
+    - |\
+      docker build \
+        --platform linux/amd64 \
+        --target image-processor \
+        --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
+        --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
+        --tag $CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
+        --tag $CI_REGISTRY_IMAGE:processed-images-latest \
+        .
+    - docker push $CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:processed-images-latest
+  only:
+    - main
+
 build-docker:
-  stage: test-and-build
+  stage: deploy
   image: docker:24
   services:
     - docker:24-dind
@@ -40,12 +67,11 @@ build-docker:
     - docker buildx use mybuilder
     - docker buildx inspect --bootstrap
   script:
-    # Build and push multi-arch image with cache optimization
+    # Build and push multi-arch image using pre-processed images
     - |
       docker buildx build \
         --platform linux/amd64,linux/arm64 \
-        --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
-        --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
+        --build-arg PROCESSED_IMAGES_TAG=$CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
         --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:cache \
         --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:cache,mode=max \
         --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA \
