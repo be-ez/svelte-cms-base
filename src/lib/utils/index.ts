@@ -1,3 +1,3 @@
 // Export lazy loading utilities
-export * from '../actions/lazyLoad';
-export * from './intersectionObserver';
+export { lazyLoad as lazyLoadAction } from '../actions/lazyLoad';
+export { createIntersectionObserver, lazyLoad as lazyLoadObserver } from './intersectionObserver';

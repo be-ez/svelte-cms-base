@@ -63,7 +63,7 @@ export function createLazyLoader(options: LazyLoadOptions = {}) {
 		},
 		disconnect() {
 			observer.disconnect();
-			observedElements.clear?.();
+			// WeakSet doesn't have a clear method, no need to clear it
 		}
 	};
 }

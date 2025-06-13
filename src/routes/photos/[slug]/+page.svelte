@@ -39,8 +39,8 @@ Type definitions for Svelte
 			className="max-w-full max-h-[calc(100vh-12rem)] object-contain"
 			enableDownload={true}
 			downloadName={data.photo.title}
-			eager={true}
-			priority={true}
+			loading="eager"
+			fetchpriority="high"
 		/>
 	</div>
 </div>

@@ -16,7 +16,7 @@
 	let isPinterestStyle = false;
 
 	// Transform recipes to grid items
-	$: gridItems = data.recipes.map(recipe => ({
+	$: gridItems = data.recipes.map((recipe: any) => ({
 		slug: recipe.slug,
 		title: recipe.title,
 		imageId: recipe.cover_photo,

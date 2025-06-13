@@ -116,7 +116,7 @@
 		display: block;
 		margin: 0;
 		padding: 0;
-		vertical-align: bottom;
+		/* vertical-align: bottom; - ignored with display: block */
 	}
 
 	.photo-grid:not(.is-pinterest) .photo-item img {
