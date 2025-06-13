@@ -24,6 +24,7 @@
 		on:keydown={e => e.key === 'Enter' && handleHeaderClick()}
 		role="button"
 		tabindex="0"
+		aria-label="Go to homepage"
 	>
 		<div class="px-8 py-2">
 			<div class="flex items-center justify-between">
@@ -44,7 +45,19 @@
 						{#if $showBackButton}
 							<button
 								class="nav-link"
-								on:click|stopPropagation={() => window.history.go(-1)}
+								on:click|stopPropagation={() => {
+									// Check if we can safely go back without leaving the site
+									if (
+										window.history.length > 1 &&
+										document.referrer &&
+										document.referrer.includes(window.location.host)
+									) {
+										window.history.go(-1);
+									} else {
+										// Navigate to home page instead
+										window.location.href = '/';
+									}
+								}}
 								aria-label="Go back"
 							>
 								&#8592;
@@ -61,6 +74,7 @@
 							href={item.href}
 							class="group relative px-5 w-6 h-6 flex items-center justify-center"
 							on:click|stopPropagation
+							aria-label="Navigate to {item.name}"
 						>
 							<span
 								class="absolute inset-0 flex items-center justify-center transition-opacity duration-200

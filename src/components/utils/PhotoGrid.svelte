@@ -1,14 +1,29 @@
 <script lang="ts">
+	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
+
 	export let items: {
 		slug: string;
 		title: string;
-		processedPath: string;
+		processedPath?: string; // Keep for backwards compatibility
+		imageId?: string; // New field for image ID
 		baseUrl: string;
 	}[] = [];
 	export let loading = false;
 	export let error: Error | null = null;
 	export let itemType = 'item';
 	export let isPinterestStyle = true;
+	export let eagerLoadCount = 3; // Number of images to load eagerly
+
+	// Helper to extract image ID from processedPath if needed
+	function getImageId(item: (typeof items)[0]): string | null {
+		if (item.imageId) return item.imageId;
+		// Try to extract from processedPath if available
+		if (item.processedPath) {
+			const match = item.processedPath.match(/\/([^-/]+)-thumbnail/);
+			return match ? match[1] : null;
+		}
+		return null;
+	}
 </script>
 
 <div class="m-0 p-0">
@@ -18,17 +33,29 @@
 		<div>Error loading {itemType}s: {error.message}</div>
 	{:else}
 		<div class="photo-grid m-0 p-0" class:is-pinterest={isPinterestStyle}>
-			{#each items as item (item.slug)}
+			{#each items as item, index (item.slug)}
+				{@const imageId = getImageId(item)}
 				<div class="photo-item m-0 p-0">
 					<a
 						href={item ? `${item.baseUrl}/${encodeURIComponent(item.slug)}` : ''}
 						class="block m-0 p-0"
 					>
-						{#if item.processedPath}
+						{#if imageId}
+							<ResponsiveImage
+								src={imageId}
+								alt={item.title}
+								eager={index < eagerLoadCount}
+								priority={index < 2}
+								className="block m-0 p-0"
+								aspectRatio={isPinterestStyle ? undefined : '1/1'}
+							/>
+						{:else if item.processedPath}
+							<!-- Fallback for backwards compatibility -->
 							<img
 								src={item.processedPath}
 								alt={item.title}
-								loading="lazy"
+								loading={index < eagerLoadCount ? 'eager' : 'lazy'}
+								fetchpriority={index < 2 ? 'high' : 'auto'}
 								decoding="async"
 								class="block m-0 p-0"
 							/>

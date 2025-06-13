@@ -1,30 +1,15 @@
 <script lang="ts">
-	import SvelteMarkdown from '@humanspeak/svelte-markdown';
+	import { Markdown } from 'svelte-exmarkdown';
+	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
 
+	import SEO from '$lib/components/SEO.svelte';
 	import type { DirectusSchema } from '$lib/directus';
 
 	import DefaultPage from '../../components/layout/defaultPage.svelte';
-	import customTable from '../../components/table/customTable.svelte';
-	import customTableBody from '../../components/table/customTableBody.svelte';
-	import customTableCell from '../../components/table/customTableCell.svelte';
-	import CustomTableHead from '../../components/table/customTableHead.svelte';
-	import customTableRow from '../../components/table/customTableRow.svelte';
-	import customCode from '../../components/utils/customCode.svelte';
-	import customHeading from '../../components/utils/customHeading.svelte';
-	import Image from '../../components/utils/image.svelte';
 
 	type Secret = DirectusSchema['secret_files'];
 
-	const renderers = {
-		code: customCode,
-		heading: customHeading,
-		image: Image,
-		table: customTable,
-		tablebody: customTableBody,
-		tablecell: customTableCell,
-		tablehead: CustomTableHead,
-		tablerow: customTableRow
-	};
+	const plugins = [gfmPlugin()];
 
 	export let data: { secrets: Secret[] };
 	let password = '';
@@ -47,6 +32,8 @@
 	}
 </script>
 
+<SEO title="About Me" description="Learn more about me, my background, and my work." />
+
 <DefaultPage title="About Me">
 	<div>
 		{#if isUnlocked}
@@ -54,7 +41,7 @@
 				<div>
 					<div class="md:text-xl">{secret.title}</div>
 					<div style="height: 20px;"></div>
-					<SvelteMarkdown source={secret.body} {renderers} />
+					<Markdown md={secret.body} {plugins} />
 				</div>
 				{#if secret.files}
 					<div class="resume-section">

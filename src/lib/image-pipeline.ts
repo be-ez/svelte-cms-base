@@ -4,36 +4,14 @@ import { join } from 'path';
 import sharp from 'sharp';
 
 import getDirectusInstance from './directus';
-
-export interface ImageSizes {
-	thumbnail: { width: number };
-	small: { width: number };
-	medium: { width: number };
-	large: { width: number };
-	display: { width: number };
-	original: null;
-}
-
-const SIZES: ImageSizes = {
-	thumbnail: { width: 400 },
-	small: { width: 800 },
-	medium: { width: 1200 },
-	large: { width: 1800 },
-	display: { width: 2400 },
-	original: null
-};
-
-const IMAGE_FORMATS = ['webp', 'jpg'] as const;
-export type ImageFormat = (typeof IMAGE_FORMATS)[number];
-
-export interface ProcessedImage {
-	originalPath: string; // This will store the original file URL
-	sizes: {
-		[K in keyof ImageSizes]: {
-			[F in ImageFormat]: string;
-		};
-	};
-}
+import {
+	generateProcessedFilename,
+	IMAGE_FORMATS,
+	IMAGE_SIZES,
+	type ImageFormatKey,
+	type ImageSizeKey,
+	type ProcessedImage
+} from './image-config';
 
 const SUPPORTED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'];
 
@@ -110,23 +88,30 @@ async function processImage(
 
 	const processedImage: ProcessedImage = {
 		originalPath: originalUrl, // Store the original file URL
-		sizes: {
-			thumbnail: { webp: '', jpg: '' },
-			small: { webp: '', jpg: '' },
-			medium: { webp: '', jpg: '' },
-			large: { webp: '', jpg: '' },
-			display: { webp: '', jpg: '' },
-			original: { webp: '', jpg: '' }
-		}
+		sizes: {} as ProcessedImage['sizes']
 	};
+
+	// Initialize sizes object
+	for (const sizeKey of Object.keys(IMAGE_SIZES) as ImageSizeKey[]) {
+		processedImage.sizes[sizeKey] = {} as any;
+		for (const formatKey of Object.keys(IMAGE_FORMATS) as ImageFormatKey[]) {
+			processedImage.sizes[sizeKey][formatKey] = '';
+		}
+	}
 
 	// Process all sizes and formats in parallel
 	const processingTasks: Promise<void>[] = [];
 
-	for (const [sizeName, dimensions] of Object.entries(SIZES)) {
-		for (const format of IMAGE_FORMATS) {
+	for (const [sizeName, sizeConfig] of Object.entries(IMAGE_SIZES) as [
+		ImageSizeKey,
+		(typeof IMAGE_SIZES)[ImageSizeKey]
+	][]) {
+		for (const [formatName, formatConfig] of Object.entries(IMAGE_FORMATS) as [
+			ImageFormatKey,
+			(typeof IMAGE_FORMATS)[ImageFormatKey]
+		][]) {
 			const task = (async () => {
-				const outputFilename = `${filename}-${sizeName}.${format}`;
+				const outputFilename = generateProcessedFilename(filename, sizeName, formatName);
 				const outputPath = join(outputDir, outputFilename);
 
 				try {
@@ -154,34 +139,27 @@ async function processImage(
 						// icc: true // Keep color profiles
 					});
 
-					if (dimensions) {
-						if ('height' in dimensions) {
-							pipeline = pipeline.resize(dimensions.width, dimensions.height, {
-								fit: 'cover',
-								position: 'attention'
-							});
-						} else {
-							pipeline = pipeline.resize(dimensions.width, null, {
-								fit: 'inside'
-							});
-						}
+					if (sizeConfig.width) {
+						pipeline = pipeline.resize(sizeConfig.width, null, {
+							fit: 'inside'
+						});
 					}
 
-					if (format === 'webp') {
+					if (formatName === 'webp') {
 						pipeline = pipeline.webp({
-							quality: 80,
-							effort: 4
+							quality: formatConfig.quality,
+							...formatConfig.options
 						});
-					} else {
+					} else if (formatName === 'jpg') {
 						pipeline = pipeline.jpeg({
-							quality: 80,
-							mozjpeg: true
+							quality: formatConfig.quality,
+							...formatConfig.options
 						});
 					}
 
 					await pipeline.toFile(outputPath);
 					console.warn('Successfully processed:', outputFilename);
-					processedImage.sizes[sizeName as keyof ImageSizes][format] = outputFilename;
+					processedImage.sizes[sizeName][formatName] = outputFilename;
 				} catch (error) {
 					console.error(`Error processing ${outputFilename}:`, error);
 					throw error;

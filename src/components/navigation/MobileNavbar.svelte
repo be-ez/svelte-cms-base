@@ -48,7 +48,19 @@
 						{#if $showBackButton}
 							<button
 								class="mr-2 nav-link"
-								on:click={() => window.history.go(-1)}
+								on:click={() => {
+									// Check if we can safely go back without leaving the site
+									if (
+										window.history.length > 1 &&
+										document.referrer &&
+										document.referrer.includes(window.location.host)
+									) {
+										window.history.go(-1);
+									} else {
+										// Navigate to home page instead
+										window.location.href = '/';
+									}
+								}}
 								aria-label="Go back"
 							>
 								&#8592;
