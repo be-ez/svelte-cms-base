@@ -42,6 +42,7 @@ process-images:
         --target image-processor \
         --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
         --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
+        --build-arg PROCESSED_IMAGES_TAG=dummy \
         --tag $CI_REGISTRY_IMAGE:processed-images-$CI_COMMIT_SHA \
         --tag $CI_REGISTRY_IMAGE:processed-images-latest \
         .
