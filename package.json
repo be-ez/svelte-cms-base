@@ -8,6 +8,10 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "lint": "prettier --check . && eslint .",
     "lint:fix": "eslint --fix . && prettier --write .",
     "format": "prettier --write .",
@@ -25,45 +29,60 @@
   "devDependencies": {
     "@directus/sdk": "^19.1.0",
     "@eslint/js": "^9.28.0",
-    "@humanspeak/svelte-markdown": "^0.8.7",
     "@sveltejs/adapter-auto": "^6.0.1",
     "@sveltejs/adapter-static": "^3.0.8",
     "@sveltejs/enhanced-img": "^0.6.0",
-    "@sveltejs/kit": "^2.21.2",
+    "@sveltejs/kit": "^2.21.4",
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "@tailwindcss/postcss": "^4.1.8",
+    "@tailwindcss/typography": "0.5.0-alpha.3",
     "@tailwindcss/vite": "^4.1.8",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/svelte": "^5.2.8",
     "@types/eslint": "^9.6.1",
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.0.0",
+    "@vitest/ui": "^3.2.3",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-svelte": "^3.9.1",
+    "eslint-plugin-svelte": "^3.9.2",
     "globals": "^16.2.0",
+    "happy-dom": "^18.0.1",
     "husky": "^9.1.7",
     "inter-ui": "^4.1.0",
+    "jsdom": "^26.1.0",
     "lint-staged": "^16.1.0",
     "mdsvex": "^0.12.6",
     "postcss": "^8.5.4",
     "prettier": "^3.5.3",
     "prettier-plugin-svelte": "^3.4.0",
     "sharp": "^0.34.2",
-    "svelte": "^5.33.15",
+    "svelte": "^5.33.19",
     "svelte-check": "^4.2.1",
     "svelte-highlight": "^7.8.3",
     "svelte-preprocess-import-assets": "^1.1.0",
     "tailwindcss": "^4.1.8",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.1",
+    "typescript-eslint": "^8.34.0",
     "vite": "^6.3.5",
-    "vite-imagetools": "^7.1.0"
+    "vite-imagetools": "^7.1.0",
+    "vitest": "^3.2.3"
   },
   "type": "module",
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
       "esbuild",
       "sharp"
+    ],
+    "ignoredBuiltDependencies": [
+      "@tailwindcss/oxide"
     ]
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "rehype-highlight": "^7.0.2",
+    "svelte-exmarkdown": "^5.0.1"
   }
 }

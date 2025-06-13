@@ -36,8 +36,13 @@ interface DirectusSchema {
 		content: string;
 	};
 	global: {
-		Title: string;
-		Description: string;
+		id: number;
+		Title: string | null;
+		Description: string | null;
+		site_url: string | null;
+		default_og_image: string | null;
+		author_name: string | null;
+		Homepage_Content: string | null;
 	};
 	secret_files: {
 		id: string;

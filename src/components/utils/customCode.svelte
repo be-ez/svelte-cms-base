@@ -3,10 +3,13 @@
 	import javascript from 'svelte-highlight/languages/javascript';
 	import python from 'svelte-highlight/languages/python';
 	import typescript from 'svelte-highlight/languages/typescript';
-	import atomOneDark from 'svelte-highlight/styles/atom-one-dark';
+	import githubDark from 'svelte-highlight/styles/github-dark';
+	import light from 'svelte-highlight/styles/stackoverflow-light';
 
-	export let lang: string;
-	export let text: string;
+	import { isDarkMode } from '$lib/stores/theme';
+
+	export let lang: string = '';
+	export let text: string = '';
 
 	$: language = (() => {
 		switch (lang) {
@@ -22,7 +25,24 @@
 
 <!-- eslint-disable svelte/no-at-html-tags -->
 <svelte:head>
-	{@html atomOneDark}
+	{#if $isDarkMode}
+		{@html githubDark}
+	{:else}
+		{@html light}
+	{/if}
 </svelte:head>
 
-<Highlight {language} code={text} />
+<div class="not-prose my-4">
+	<div class="overflow-hidden rounded-md border border-gray-200 dark:border-gray-700">
+		{#if lang}
+			<div
+				class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+			>
+				<span>{lang}</span>
+			</div>
+		{/if}
+		<div class="overflow-x-auto bg-gray-50 dark:bg-gray-900">
+			<Highlight {language} code={text} />
+		</div>
+	</div>
+</div>

@@ -35,9 +35,40 @@ export const handle: Handle = async ({ event, resolve }) => {
 		return new Response('Server Error: Failed to process images', { status: 500 });
 	}
 
-	return await resolve(event, {
+	const response = await resolve(event, {
 		filterSerializedResponseHeaders: key => {
 			return key.toLowerCase() === 'content-type';
 		}
+	});
+
+	// Security headers
+	const headers = new Headers(response.headers);
+	headers.set('X-Content-Type-Options', 'nosniff');
+	headers.set('X-Frame-Options', 'DENY');
+	headers.set('X-XSS-Protection', '1; mode=block');
+	headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+	headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
+	// Basic CSP - adjust based on your needs
+	const csp = [
+		"default-src 'self'",
+		"script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Needed for SvelteKit
+		"style-src 'self' 'unsafe-inline'", // Needed for inline styles
+		"img-src 'self' data: https:",
+		"font-src 'self' data:",
+		"connect-src 'self' " + DIRECTUS_API_URL,
+		"frame-src 'none'",
+		"object-src 'none'",
+		"base-uri 'self'",
+		"form-action 'self'",
+		"frame-ancestors 'none'"
+	].join('; ');
+
+	headers.set('Content-Security-Policy', csp);
+
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers
 	});
 };
