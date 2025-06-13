@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rg:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(git add .gitlab-ci.yml)",
+      "Bash(pnpm run:*)",
+      "Bash(docker run:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": []
+  }
+}
