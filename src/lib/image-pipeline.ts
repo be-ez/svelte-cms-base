@@ -232,6 +232,30 @@ export async function shouldRegenerateAssets(): Promise<boolean> {
 	}
 }
 
+// Helper function to check if all variants of an image exist
+async function imageAlreadyExists(imageId: string, outputDir: string): Promise<boolean> {
+	try {
+		// Check all expected size and format combinations
+		for (const [sizeName] of Object.entries(IMAGE_SIZES) as [ImageSizeKey, any][]) {
+			for (const [formatName] of Object.entries(IMAGE_FORMATS) as [ImageFormatKey, any][]) {
+				const expectedFilename = generateProcessedFilename('temp', sizeName, formatName).replace(
+					'temp',
+					imageId
+				);
+				const expectedPath = join(outputDir, expectedFilename);
+
+				const exists = await doesFileExist(expectedPath);
+				if (!exists) {
+					return false;
+				}
+			}
+		}
+		return true;
+	} catch (error) {
+		return false;
+	}
+}
+
 // Helper function to process images in batches
 async function processBatch(
 	batch: { id: string; url: string }[],
@@ -242,6 +266,31 @@ async function processBatch(
 	const batchResults = await Promise.all(
 		batch.map(async ({ id, url }) => {
 			try {
+				// Check if image already exists
+				const alreadyExists = await imageAlreadyExists(id, outputDir);
+				if (alreadyExists) {
+					console.warn(`✓ Skipping ${id} - already processed`);
+					// Return a basic manifest entry for existing image
+					const processedImage: ProcessedImage = {
+						originalPath: url,
+						sizes: {} as any
+					};
+
+					// Build the sizes object for the manifest
+					for (const [sizeName] of Object.entries(IMAGE_SIZES) as [ImageSizeKey, any][]) {
+						processedImage.sizes[sizeName] = {} as any;
+						for (const [formatName] of Object.entries(IMAGE_FORMATS) as [ImageFormatKey, any][]) {
+							const filename = generateProcessedFilename('temp', sizeName, formatName).replace(
+								'temp',
+								id
+							);
+							processedImage.sizes[sizeName][formatName] = filename;
+						}
+					}
+
+					return { id, processedImage };
+				}
+
 				console.warn('Processing file:', id);
 				const { buffer, contentType } = await downloadImage(url, token);
 

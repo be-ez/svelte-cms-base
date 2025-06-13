@@ -2,6 +2,7 @@ image: node:current-alpine
 
 stages:
   - test
+  - build
   - deploy
   - rebuild
 
@@ -10,13 +11,64 @@ variables:
 
 test:
   stage: test
+  variables:
+    # Dummy env vars for svelte-check - not used in actual tests
+    DIRECTUS_API_URL: "https://dummy.example.com"
+    DIRECTUS_TOKEN: "dummy-token"
   script:
     - corepack enable
     - pnpm install
     - pnpm run lint:fix
     - pnpm run check
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+build-docker:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+  script:
+    # Login to GitLab Container Registry
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    
+    # Build and push with cache optimization
+    - |
+      docker build \
+        --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
+        --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
+        --cache-from $CI_REGISTRY_IMAGE:image-processor-cache \
+        --cache-from $CI_REGISTRY_IMAGE:latest \
+        --target image-processor \
+        --tag $CI_REGISTRY_IMAGE:image-processor-cache \
+        .
+    
+    # Push image processor cache
+    - docker push $CI_REGISTRY_IMAGE:image-processor-cache
+    
+    # Build final image using cached image processor
+    - |
+      docker build \
+        --build-arg DIRECTUS_API_URL=$DIRECTUS_API_URL \
+        --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
+        --cache-from $CI_REGISTRY_IMAGE:image-processor-cache \
+        --cache-from $CI_REGISTRY_IMAGE:latest \
+        --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA \
+        --tag $CI_REGISTRY_IMAGE:latest \
+        .
+    
+    # Push final images
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - main
+
 # dokku-deploy:
 #   stage: deploy
 #   before_script:
