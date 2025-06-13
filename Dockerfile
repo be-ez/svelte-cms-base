@@ -77,6 +77,10 @@ ENV CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
 # Install curl for Cloudflare cache purging
 RUN apk add --no-cache curl
 
+# Copy the cache purge script
+COPY scripts/purge-cloudflare-cache.sh /usr/local/bin/purge-cache
+RUN chmod +x /usr/local/bin/purge-cache
+
 # Copy the built files from the build stage
 COPY --from=build /app/build /usr/share/nginx/html
 
