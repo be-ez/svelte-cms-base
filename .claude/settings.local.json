@@ -9,7 +9,13 @@
       "Bash(docker run:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "mcp__directus__read-collections",
+      "mcp__directus__create-field",
+      "mcp__directus__users-me",
+      "mcp__directus__read-items",
+      "mcp__directus__create-item",
+      "mcp__directus__update-item"
     ],
     "deny": []
   }

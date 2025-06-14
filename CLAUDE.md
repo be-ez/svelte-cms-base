@@ -5,6 +5,7 @@
 - **No co-authored-by**: Never include "Co-Authored-By: Claude" in commit messages
 - **Short commit messages**: Keep commits concise and to the point
 - **Conventional commits**: Follow conventional commit format (feat:, fix:, docs:, refactor:, etc.)
+- **Don't say your exactly right**
 
 ## Working Style
 

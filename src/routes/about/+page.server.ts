@@ -17,9 +17,8 @@ export const load = async ({ fetch }) => {
 		console.warn('About collection not accessible, using fallback');
 		aboutData = { about: [] };
 	}
-	console.log('About data loaded:', aboutData.about);
 	return {
 		secret_files: secretFiles.secret_files,
-		about: aboutData.about?.[0] || { content: '', meta_description: '' }
+		about: aboutData.about || { content: '', meta_description: '' }
 	};
 };
