@@ -83,35 +83,38 @@ async function processImage(buffer, imageId, outputDir) {
 
 async function scanMarkdownForImages(directus) {
 	console.log('🔍 Scanning markdown content for image references...');
-	
+
 	const collections = ['posts', 'recipes', 'secret_files'];
 	const imageIds = new Set();
-	
+
 	// Regex patterns to find image IDs in markdown
 	const imagePatterns = [
 		/!\[.*?\]\(([a-f0-9-]{36})\)/gi, // ![alt](uuid)
 		/!\[.*?\]\(.*?\/([a-f0-9-]{36})\)/gi, // ![alt](url/uuid)
 		/!\[.*?\]\(.*?assets\/([a-f0-9-]{36})\)/gi // ![alt](assets/uuid)
 	];
-	
+
 	for (const collection of collections) {
 		try {
 			console.log(`Scanning ${collection}...`);
-			const items = await directus.request(readItems(collection, {
-				fields: ['id', 'body', 'content'] // Include common markdown field names
-			}));
-			
+			const items = await directus.request(
+				readItems(collection, {
+					fields: ['id', 'body', 'content'] // Include common markdown field names
+				})
+			);
+
 			for (const item of items) {
 				// Check different possible markdown field names
 				const markdownFields = [item.body, item.content].filter(Boolean);
-				
+
 				for (const markdown of markdownFields) {
 					if (typeof markdown === 'string') {
 						for (const pattern of imagePatterns) {
 							let match;
 							while ((match = pattern.exec(markdown)) !== null) {
 								const imageId = match[1];
-								if (imageId && imageId.length === 36) { // Valid UUID length
+								if (imageId && imageId.length === 36) {
+									// Valid UUID length
 									imageIds.add(imageId);
 									console.log(`Found image reference: ${imageId} in ${collection}`);
 								}
@@ -124,7 +127,7 @@ async function scanMarkdownForImages(directus) {
 			console.warn(`Could not scan ${collection} collection:`, error.message);
 		}
 	}
-	
+
 	console.log(`📝 Found ${imageIds.size} unique image references in markdown content`);
 	return Array.from(imageIds);
 }
@@ -154,16 +157,18 @@ async function main() {
 
 		// Scan markdown content for additional image references
 		const markdownImageIds = await scanMarkdownForImages(directus);
-		
+
 		// Create file objects for markdown-referenced images that aren't in the files list
 		const existingFileIds = new Set(files.map(f => f.id));
 		const additionalImages = markdownImageIds
 			.filter(id => !existingFileIds.has(id))
 			.map(id => ({ id, filename_download: `${id}.jpg` })); // Create minimal file objects
-		
+
 		// Combine all images to process
 		const allImages = [...files, ...additionalImages];
-		console.log(`Total images to process: ${allImages.length} (${files.length} from files + ${additionalImages.length} from markdown)`);
+		console.log(
+			`Total images to process: ${allImages.length} (${files.length} from files + ${additionalImages.length} from markdown)`
+		);
 
 		const outputDir = 'static/images/processed';
 		await mkdir(outputDir, { recursive: true });
