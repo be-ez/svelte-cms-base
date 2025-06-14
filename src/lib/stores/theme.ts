@@ -6,9 +6,13 @@ import { darkTheme, lightTheme, type ThemeConfig } from '../theme/config';
 
 // Create a store for dark mode preference
 function createDarkModeStore() {
-	const { subscribe, set, update } = writable(
-		browser ? localStorage.getItem('theme') === 'dark' : false
-	);
+	// Check if dark class is already set (from app.html)
+	const initialValue = browser
+		? document.documentElement.classList.contains('dark') ||
+			localStorage.getItem('theme') === 'dark'
+		: false;
+
+	const { subscribe, set, update } = writable(initialValue);
 
 	return {
 		subscribe,
@@ -18,6 +22,8 @@ function createDarkModeStore() {
 				if (browser) {
 					const newTheme = newValue ? 'dark' : 'light';
 					localStorage.setItem('theme', newTheme);
+					// Mark as manually set to prevent auto-updates for a while
+					localStorage.setItem('theme-manual-timestamp', Date.now().toString());
 					document.documentElement.classList.toggle('dark', newValue);
 				}
 				return newValue;
@@ -29,20 +35,32 @@ function createDarkModeStore() {
 
 export const isDarkMode = createDarkModeStore();
 
+// Listen for system theme changes and update if user hasn't manually set a preference
+if (browser) {
+	const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+	mediaQuery.addEventListener('change', e => {
+		// Only auto-update if the user hasn't manually set a preference recently
+		// We'll consider a preference "manual" if it was set in the last hour
+		const lastManualSet = localStorage.getItem('theme-manual-timestamp');
+		const oneHourAgo = Date.now() - 60 * 60 * 1000;
+
+		if (!lastManualSet || parseInt(lastManualSet) < oneHourAgo) {
+			const newTheme = e.matches ? 'dark' : 'light';
+			localStorage.setItem('theme', newTheme);
+			isDarkMode.set(e.matches);
+		}
+	});
+}
+
 function createThemeStore() {
 	const { subscribe, set, update } = writable<ThemeConfig>(lightTheme);
 
-	// Initialize theme based on stored preference
+	// Initialize theme based on stored preference (if not already set by app.html)
 	if (browser) {
-		const storedTheme = localStorage.getItem('theme');
-		const isDark = storedTheme === 'dark';
-		if (isDark) {
-			document.documentElement.classList.add('dark');
-			updateCssVariables(darkTheme);
-		} else {
-			document.documentElement.classList.remove('dark');
-			updateCssVariables(lightTheme);
-		}
+		const isDark = document.documentElement.classList.contains('dark');
+		// Only update CSS variables, classes and localStorage are handled by app.html
+		updateCssVariables(isDark ? darkTheme : lightTheme);
 		// Sync the isDarkMode store
 		isDarkMode.set(isDark);
 	}

@@ -7,13 +7,68 @@
 
 		<script>
 			// Initialize theme before page load to prevent flash
-			const theme = localStorage.getItem('theme') || 'light';
-			document.documentElement.setAttribute('data-theme', theme);
+			let theme = localStorage.getItem('theme');
+			
+			// If no theme is set, detect system preference
+			if (!theme) {
+				const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+				theme = prefersDark ? 'dark' : 'light';
+				// Save the detected preference
+				localStorage.setItem('theme', theme);
+			}
+			
+			const isDark = theme === 'dark';
+			
+			if (isDark) {
+				document.documentElement.classList.add('dark');
+			}
+			
+			// Set CSS variables immediately to prevent flash
+			const root = document.documentElement;
+			if (isDark) {
+				// Dark theme variables
+				root.style.setProperty('--color-primary', '#FFFFFF');
+				root.style.setProperty('--color-secondary', '#9CA3AF');
+				root.style.setProperty('--color-tertiary', '#D1D5DB');
+				root.style.setProperty('--color-accent', '#60A5FA');
+				root.style.setProperty('--color-background', '#1F2937');
+				root.style.setProperty('--color-border', '#374151');
+				root.style.setProperty('--color-hover', '#3B82F6');
+				root.style.setProperty('--color-hoverSubtle', '#4B5563');
+				root.style.setProperty('--background-color', '#1F2937');
+				// Gray colors
+				root.style.setProperty('--color-gray-100', '#1F2937');
+				root.style.setProperty('--color-gray-200', '#374151');
+				root.style.setProperty('--color-gray-300', '#4B5563');
+				root.style.setProperty('--color-gray-500', '#9CA3AF');
+				root.style.setProperty('--color-gray-600', '#D1D5DB');
+				root.style.setProperty('--color-gray-700', '#E5E7EB');
+				root.style.setProperty('--color-gray-800', '#F3F4F6');
+			} else {
+				// Light theme variables
+				root.style.setProperty('--color-primary', '#1a1a1a');
+				root.style.setProperty('--color-secondary', '#6B7280');
+				root.style.setProperty('--color-tertiary', '#4B5563');
+				root.style.setProperty('--color-accent', '#3B82F6');
+				root.style.setProperty('--color-background', '#FFFFFF');
+				root.style.setProperty('--color-border', '#E5E7EB');
+				root.style.setProperty('--color-hover', '#2563EB');
+				root.style.setProperty('--color-hoverSubtle', '#E5E7EB');
+				root.style.setProperty('--background-color', '#FFFFFF');
+				// Gray colors
+				root.style.setProperty('--color-gray-100', '#F3F4F6');
+				root.style.setProperty('--color-gray-200', '#E5E7EB');
+				root.style.setProperty('--color-gray-300', '#D1D5DB');
+				root.style.setProperty('--color-gray-500', '#6B7280');
+				root.style.setProperty('--color-gray-600', '#4B5563');
+				root.style.setProperty('--color-gray-700', '#374151');
+				root.style.setProperty('--color-gray-800', '#1F2937');
+			}
 		</script>
 		%sveltekit.head%
 	</head>
 
-	<body data-sveltekit-preload-data="hover">
+	<body data-sveltekit-preload-data="hover" style="background-color: var(--color-background); color: var(--color-primary); transition: background-color 0.2s ease-in-out;">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
