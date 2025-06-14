@@ -25,7 +25,40 @@
 		}
 		return null;
 	}
+
+	// Reorganize items for row-based masonry ordering
+	function reorganizeForRowOrder(itemsToReorganize: typeof items, columnCount: number) {
+		if (!isPinterestStyle) return itemsToReorganize;
+
+		const result = [];
+		const chunks = [];
+
+		// Split into chunks of columnCount (rows)
+		for (let i = 0; i < itemsToReorganize.length; i += columnCount) {
+			chunks.push(itemsToReorganize.slice(i, i + columnCount));
+		}
+
+		// Redistribute: take one from each row for each column
+		for (let col = 0; col < columnCount; col++) {
+			for (const chunk of chunks) {
+				if (chunk[col]) {
+					result.push(chunk[col]);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	// Get current column count based on screen size
+	let innerWidth = 0;
+	$: columnCount = innerWidth <= 640 ? 2 : innerWidth <= 1024 ? 2 : 3;
+
+	// Reorganized items for proper row ordering
+	$: reorganizedItems = reorganizeForRowOrder(items, columnCount);
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="m-0 p-0">
 	{#if loading}
@@ -34,7 +67,7 @@
 		<div>Error loading {itemType}s: {error.message}</div>
 	{:else}
 		<div class="photo-grid m-0 p-0" class:is-pinterest={isPinterestStyle}>
-			{#each items as item, index (item.slug)}
+			{#each reorganizedItems as item, index (item.slug)}
 				{@const imageId = getImageId(item)}
 				<div class="photo-item m-0 p-0">
 					<a
