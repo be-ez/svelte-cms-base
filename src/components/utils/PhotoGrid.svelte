@@ -12,7 +12,8 @@
 	export let error: Error | null = null;
 	export let itemType = 'item';
 	export let isPinterestStyle = true;
-	export let eagerLoadCount = 3; // Number of images to load eagerly
+	export let eagerLoadCount = 6; // Number of images to load eagerly
+	export let priorityLoadCount = 3; // High priority images
 
 	// Helper to extract image ID from processedPath if needed
 	function getImageId(item: (typeof items)[0]): string | null {
@@ -45,17 +46,19 @@
 								src={imageId}
 								alt={item.title}
 								eager={index < eagerLoadCount}
-								priority={index < 2}
+								priority={index < priorityLoadCount}
 								className="block m-0 p-0"
 								aspectRatio={isPinterestStyle ? undefined : '1/1'}
+								objectFit={isPinterestStyle ? 'scale-down' : 'cover'}
+								rootMargin={index < eagerLoadCount ? '200px' : '50px'}
+								threshold={0.1}
 							/>
 						{:else if item.processedPath}
-							<!-- Fallback for backwards compatibility -->
 							<img
 								src={item.processedPath}
 								alt={item.title}
 								loading={index < eagerLoadCount ? 'eager' : 'lazy'}
-								fetchpriority={index < 2 ? 'high' : 'auto'}
+								fetchpriority={index < priorityLoadCount ? 'high' : 'auto'}
 								decoding="async"
 								class="block m-0 p-0"
 							/>
@@ -85,7 +88,7 @@
 
 	.photo-grid.is-pinterest {
 		column-count: 3;
-		column-gap: 0;
+		column-gap: 1rem;
 		column-fill: balance;
 	}
 
@@ -104,7 +107,8 @@
 	.photo-grid.is-pinterest .photo-item {
 		break-inside: avoid;
 		display: inline-block;
-		margin: 0;
+		width: 100%;
+		margin: 0 0 1rem 0;
 		padding: 0;
 		line-height: 0;
 	}
@@ -121,6 +125,12 @@
 
 	.photo-grid:not(.is-pinterest) .photo-item img {
 		aspect-ratio: 1 / 1;
+	}
+
+	.photo-grid.is-pinterest .photo-item img {
+		width: 100%;
+		height: auto;
+		display: block;
 	}
 
 	.placeholder-image {

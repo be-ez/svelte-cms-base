@@ -23,6 +23,10 @@
 	// For SSR optimization - if you already have the image data
 	export let preloadedImageData: ProcessedImageData | undefined = undefined;
 
+	// Intersection observer settings for gallery optimization
+	export let rootMargin = '100px'; // Load images 100px before they enter viewport
+	export let threshold = 0.1;
+
 	// Internal state
 	let imageData: ProcessedImageData | null = preloadedImageData || null;
 	let isClient = false;
@@ -68,6 +72,8 @@
 		fetchpriority={priority ? 'high' : 'auto'}
 		{className}
 		style={styleString}
+		{rootMargin}
+		{threshold}
 	/>
 {:else}
 	<!-- SSR fallback -->
