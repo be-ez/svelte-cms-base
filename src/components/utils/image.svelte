@@ -2,7 +2,7 @@
 	import EnhancedImg from '$lib/components/EnhancedImg.svelte';
 
 	export let href = '';
-	export let title = undefined;
+	export let title: string | null | undefined = undefined;
 	export let text = '';
 	// Enable downloads by default for markdown content
 	export let downloadable = true;
@@ -23,7 +23,7 @@
 	<EnhancedImg
 		{imageId}
 		alt={text}
-		{title}
+		title={title || undefined}
 		enableDownload={downloadable}
 		downloadName={imageId}
 		className={downloadable ? 'cursor-pointer' : ''}

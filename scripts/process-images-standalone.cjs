@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-require-imports, no-console, @typescript-eslint/no-unused-vars */
 
-const { readFiles } = require('@directus/sdk');
+// Load environment variables from .env file
+require('dotenv').config();
+
+const { readFiles, readItems } = require('@directus/sdk');
 const { access, mkdir, readdir, readFile, writeFile } = require('fs/promises');
 const { join } = require('path');
 const sharp = require('sharp');
@@ -78,6 +81,54 @@ async function processImage(buffer, imageId, outputDir) {
 	return processedImage;
 }
 
+async function scanMarkdownForImages(directus) {
+	console.log('🔍 Scanning markdown content for image references...');
+	
+	const collections = ['posts', 'recipes', 'secret_files'];
+	const imageIds = new Set();
+	
+	// Regex patterns to find image IDs in markdown
+	const imagePatterns = [
+		/!\[.*?\]\(([a-f0-9-]{36})\)/gi, // ![alt](uuid)
+		/!\[.*?\]\(.*?\/([a-f0-9-]{36})\)/gi, // ![alt](url/uuid)
+		/!\[.*?\]\(.*?assets\/([a-f0-9-]{36})\)/gi // ![alt](assets/uuid)
+	];
+	
+	for (const collection of collections) {
+		try {
+			console.log(`Scanning ${collection}...`);
+			const items = await directus.request(readItems(collection, {
+				fields: ['id', 'body', 'content'] // Include common markdown field names
+			}));
+			
+			for (const item of items) {
+				// Check different possible markdown field names
+				const markdownFields = [item.body, item.content].filter(Boolean);
+				
+				for (const markdown of markdownFields) {
+					if (typeof markdown === 'string') {
+						for (const pattern of imagePatterns) {
+							let match;
+							while ((match = pattern.exec(markdown)) !== null) {
+								const imageId = match[1];
+								if (imageId && imageId.length === 36) { // Valid UUID length
+									imageIds.add(imageId);
+									console.log(`Found image reference: ${imageId} in ${collection}`);
+								}
+							}
+						}
+					}
+				}
+			}
+		} catch (error) {
+			console.warn(`Could not scan ${collection} collection:`, error.message);
+		}
+	}
+	
+	console.log(`📝 Found ${imageIds.size} unique image references in markdown content`);
+	return Array.from(imageIds);
+}
+
 async function main() {
 	const DIRECTUS_API_URL = process.env.DIRECTUS_API_URL;
 	const DIRECTUS_TOKEN = process.env.DIRECTUS_TOKEN;
@@ -97,9 +148,22 @@ async function main() {
 		// Set the token
 		await directus.setToken(DIRECTUS_TOKEN);
 
-		// Get all files
+		// Get all files from Directus
 		const files = await directus.request(readFiles());
 		console.log('Found files:', files.length);
+
+		// Scan markdown content for additional image references
+		const markdownImageIds = await scanMarkdownForImages(directus);
+		
+		// Create file objects for markdown-referenced images that aren't in the files list
+		const existingFileIds = new Set(files.map(f => f.id));
+		const additionalImages = markdownImageIds
+			.filter(id => !existingFileIds.has(id))
+			.map(id => ({ id, filename_download: `${id}.jpg` })); // Create minimal file objects
+		
+		// Combine all images to process
+		const allImages = [...files, ...additionalImages];
+		console.log(`Total images to process: ${allImages.length} (${files.length} from files + ${additionalImages.length} from markdown)`);
 
 		const outputDir = 'static/images/processed';
 		await mkdir(outputDir, { recursive: true });
@@ -121,8 +185,8 @@ async function main() {
 		let skipped = 0;
 		let processed = 0;
 
-		for (let i = 0; i < files.length; i += BATCH_SIZE) {
-			const batch = files.slice(i, i + BATCH_SIZE);
+		for (let i = 0; i < allImages.length; i += BATCH_SIZE) {
+			const batch = allImages.slice(i, i + BATCH_SIZE);
 
 			await Promise.all(
 				batch.map(async file => {

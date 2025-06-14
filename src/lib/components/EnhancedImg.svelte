@@ -51,7 +51,12 @@
 		try {
 			imageData = await getProcessedImage(imageId);
 			if (!imageData) {
-				console.warn(`No processed image found for ID: ${imageId}`);
+				// In development, this is expected - fallback to direct asset URL
+				if (import.meta.env.DEV) {
+					console.info(`Image ${imageId} not processed yet - using direct asset URL`);
+				} else {
+					console.warn(`No processed image found for ID: ${imageId}`);
+				}
 				hasError = true;
 				isLoading = false;
 				return;

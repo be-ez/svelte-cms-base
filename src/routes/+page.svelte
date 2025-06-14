@@ -12,6 +12,7 @@
 	import { isDarkMode } from '$lib/stores/theme';
 
 	import DefaultPage from '../components/layout/defaultPage.svelte';
+	import ImageComponent from '../components/utils/image.svelte';
 
 	export let data: { global: DirectusSchema['global'] | null };
 
@@ -39,7 +40,11 @@
 	<div class="max-w-4xl mx-auto">
 		{#if data.global?.Homepage_Content}
 			<div class="prose prose-lg mx-auto max-w-none" class:prose-invert={$isDarkMode}>
-				<Markdown md={data.global.Homepage_Content} {plugins} />
+				<Markdown md={data.global.Homepage_Content} {plugins}>
+					{#snippet img(props)}
+						<ImageComponent href={props.src || ''} title={props.title} text={props.alt || ''} />
+					{/snippet}
+				</Markdown>
 			</div>
 		{/if}
 	</div>

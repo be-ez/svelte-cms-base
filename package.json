@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite dev",
+    "dev:process-images": "node scripts/process-images-standalone.cjs",
     "build": "vite build && node scripts/copy-static-assets.js",
     "build:only": "vite build",
     "preview": "vite preview",
@@ -44,6 +45,7 @@
     "@types/node": "^24.0.1",
     "@vitest/ui": "^3.2.3",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^16.5.0",
     "esbuild-register": "^3.6.0",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
