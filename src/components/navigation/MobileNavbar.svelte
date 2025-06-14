@@ -32,8 +32,9 @@
 <nav class="mobile-navbar bg-page border-b nav-border">
 	<div class="px-6">
 		<div class="flex justify-between items-center h-full py-3">
-			<!-- Left side: About -->
-			<div class="w-16">
+			<!-- Left side: Home + About -->
+			<div class="w-16 flex items-center gap-1">
+				<a href="/" class="text-sm nav-link" aria-label="Go to homepage">🏠</a>
 				<a
 					href="/about"
 					class="text-2xl font-bold nav-link {currentPath === '/about' ? 'underline' : ''}"
