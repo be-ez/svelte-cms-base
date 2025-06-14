@@ -9,6 +9,11 @@ stages:
 variables:
   APP_NAME: personal
 
+# Auto-cancel redundant pipelines
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+
 test:
   stage: test
   variables:
@@ -31,6 +36,7 @@ build-complete:
     - docker:24-dind
   variables:
     DOCKER_HOST: unix:///var/run/docker.sock
+  interruptible: true
   before_script:
     # Login to GitLab Container Registry
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
@@ -58,6 +64,7 @@ build-docker:
     - docker:24-dind
   variables:
     DOCKER_HOST: unix:///var/run/docker.sock
+  interruptible: true
   before_script:
     # Login to GitLab Container Registry
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
