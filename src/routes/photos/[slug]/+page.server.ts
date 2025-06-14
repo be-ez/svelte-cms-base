@@ -14,6 +14,13 @@ export const entries: EntryGenerator = async () => {
 
 export async function load({ fetch, params }) {
 	const directus = getDirectusInstance(fetch);
+
+	// Get all photos sorted by date for navigation
+	const allPhotos = await readCollection(directus, 'photos', {
+		fields: ['slug', 'title', 'date_created'],
+		sort: ['-date_created']
+	});
+
 	// First try exact match
 	let photos = await readCollection(directus, 'photos', {
 		filter: {
@@ -36,7 +43,14 @@ export async function load({ fetch, params }) {
 		throw error(404, 'Photo not found');
 	}
 
+	// Find current photo index and get prev/next
+	const currentIndex = allPhotos.findIndex(p => p.slug.trim() === params.slug);
+	const prevPhoto = currentIndex < allPhotos.length - 1 ? allPhotos[currentIndex + 1] : null;
+	const nextPhoto = currentIndex > 0 ? allPhotos[currentIndex - 1] : null;
+
 	return {
-		photo: photos[0]
+		photo: photos[0],
+		prevPhoto,
+		nextPhoto
 	};
 }
