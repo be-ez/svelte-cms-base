@@ -2,5 +2,7 @@
 import { loadDirectusItems } from '$lib/utils/loadDirectusItems';
 
 export async function load({ fetch }) {
-	return await loadDirectusItems(fetch, 'photos');
+	return await loadDirectusItems(fetch, 'photos', {
+		sort: ['-date_created']
+	});
 }
