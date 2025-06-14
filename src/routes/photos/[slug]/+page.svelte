@@ -55,9 +55,9 @@ Type definitions for Svelte
 			<!-- Left navigation area - extended toward center -->
 			{#if data.prevPhoto}
 				<button
-					on:click={() => navigateToPhoto(data.prevPhoto.slug)}
+					on:click={() => navigateToPhoto(data.prevPhoto?.slug || '')}
 					class="absolute left-0 top-0 w-1/3 h-full z-10 flex items-center justify-start pl-8 group cursor-pointer"
-					aria-label="Previous photo: {data.prevPhoto.title}"
+					aria-label="Previous photo: {data.prevPhoto?.title || ''}"
 				>
 					<div
 						class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 backdrop-blur-sm rounded-full p-3"
@@ -77,9 +77,9 @@ Type definitions for Svelte
 			<!-- Right navigation area - extended toward center -->
 			{#if data.nextPhoto}
 				<button
-					on:click={() => navigateToPhoto(data.nextPhoto.slug)}
+					on:click={() => navigateToPhoto(data.nextPhoto?.slug || '')}
 					class="absolute right-0 top-0 w-1/3 h-full z-10 flex items-center justify-end pr-8 group cursor-pointer"
-					aria-label="Next photo: {data.nextPhoto.title}"
+					aria-label="Next photo: {data.nextPhoto?.title || ''}"
 				>
 					<div
 						class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 backdrop-blur-sm rounded-full p-3"

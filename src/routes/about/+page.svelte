@@ -12,7 +12,7 @@
 
 	const plugins = [gfmPlugin()];
 
-	export let data: { secret_files: Secret[] };
+	export let data: { secret_files: Secret[]; about: { content: string; meta_description: string } };
 	let password = '';
 	let isUnlocked = false;
 	let secret: Secret = {
@@ -33,9 +33,26 @@
 	}
 </script>
 
-<SEO title="About Me" description="Learn more about me, my background, and my work." />
+<SEO
+	title="About Me"
+	description={data.about.meta_description ||
+		'Senior Software Engineer specializing in distributed systems, cloud architecture, and scalable data processing. Currently at SkyFi, previously at Telegraph, Planet, and Impossible Foods.'}
+/>
 
 <DefaultPage title="About Me">
+	<!-- Public About Content -->
+	<div class="prose dark:prose-invert max-w-none mb-12">
+		<Markdown md={data.about.content || ''} {plugins}>
+			{#snippet img(props)}
+				<ImageComponent href={props.src || ''} title={props.title} text={props.alt || ''} />
+			{/snippet}
+		</Markdown>
+	</div>
+
+	<!-- Divider -->
+	<div class="border-t border-gray-200 dark:border-gray-700 my-8"></div>
+
+	<!-- Secret Files Section -->
 	<div>
 		{#if isUnlocked}
 			{#if secret.body}
