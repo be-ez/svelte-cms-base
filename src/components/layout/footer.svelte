@@ -9,8 +9,8 @@
 </script>
 
 <footer class="bg-background py-1 nav-border items-center">
-	<div class="container mx-auto flex flex-col md:flex-row justify-between items-center px-2">
-		<div class="flex space-x-4 md:my-2 md:my-0 justify-center items-center">
+	<div class="container mx-auto flex flex-col md:flex-row items-center px-2">
+		<div class="flex-1 flex space-x-4 md:my-2 md:my-0 justify-start items-center">
 			<div class="text-center md:text-left">
 				<p class="text-xs">
 					<a href="mailto:alex@shulman.dev" class="nav-link">📧</a>
@@ -22,10 +22,10 @@
 				>
 			{/each}
 		</div>
-		<div class="flex items-center">
+		<div class="flex-1 flex items-center justify-center">
 			<ThemeToggle />
 		</div>
-		<div class="text-xs text-center md:text-right">
+		<div class="flex-1 text-xs text-center md:text-right">
 			<p>© 2025</p>
 		</div>
 	</div>

@@ -27,6 +27,7 @@
 	export let pictureClass: string = '';
 	export let enableDownload = false;
 	export let downloadName: string | undefined = undefined;
+	export let onLoad: ((event: Event) => void) | undefined = undefined;
 
 	// Intersection Observer options
 	export let enableIntersectionObserver = true;
@@ -107,8 +108,9 @@
 	$: defaultImageUrl = imageData?.getUrl(defaultSize, defaultFormat) || `/assets/${imageId}`;
 
 	// Handle image load event
-	function handleImageLoad() {
+	function handleImageLoad(event: Event) {
 		isImageLoaded = true;
+		onLoad?.(event);
 	}
 
 	// Handle image error
@@ -118,7 +120,7 @@
 	}
 </script>
 
-<div bind:this={containerElement} class="enhanced-img-container {className}" {style}>
+<div bind:this={containerElement} class="enhanced-img-container" {style}>
 	{#if isLoading}
 		<div class="enhanced-img-placeholder">
 			<div class="loading-skeleton"></div>
@@ -147,7 +149,7 @@
 						{decoding}
 						sizes={responsiveSizes}
 						srcset={jpgSrcSet}
-						class="enhanced-img"
+						class="enhanced-img {className}"
 						class:loaded={isImageLoaded}
 						on:load={handleImageLoad}
 						on:error={handleImageError}
@@ -168,7 +170,7 @@
 					{decoding}
 					sizes={responsiveSizes}
 					srcset={jpgSrcSet}
-					class="enhanced-img"
+					class="enhanced-img {className}"
 					class:loaded={isImageLoaded}
 					on:load={handleImageLoad}
 					on:error={handleImageError}
@@ -197,7 +199,6 @@
 	.enhanced-img-container {
 		position: relative;
 		display: inline-block;
-		overflow: hidden;
 	}
 
 	.enhanced-img-placeholder {
@@ -259,9 +260,6 @@
 	}
 
 	.enhanced-img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
 		transition: opacity 0.3s ease-in-out;
 	}
 

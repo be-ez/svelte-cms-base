@@ -14,12 +14,19 @@ Type definitions for Svelte
 
 	let seoImageUrl = '';
 	let _loading = true;
+	let imageElement: HTMLImageElement;
+	let isLandscape = false;
 
 	onMount(async () => {
 		// Get SEO image URL for meta tags
 		seoImageUrl = await imageService.getImageUrl(data.photo.image, 'display');
 		_loading = false;
 	});
+
+	function handleImageLoad(event: Event) {
+		const img = event.target as HTMLImageElement;
+		isLandscape = img.naturalWidth > img.naturalHeight;
+	}
 </script>
 
 <SEO
@@ -29,18 +36,27 @@ Type definitions for Svelte
 	image={seoImageUrl}
 />
 
-<div class="min-h-[calc(100vh-8rem)] flex flex-col">
-	<h1 class="p-4 text-center">{data.photo.title}</h1>
+<div class="bg-white">
+	<div class="max-w-7xl mx-auto px-8 py-8">
+		<div class="flex flex-col items-center justify-center" style="height: calc(100vh - 10rem);">
+			<div class="flex-1 flex items-center justify-center w-full">
+				<EnhancedImg
+					imageId={data.photo.image}
+					alt={data.photo.title}
+					className="max-w-[85vw] max-h-[calc(100vh-14rem)] object-contain shadow-2xl"
+					enableDownload={true}
+					downloadName={data.photo.title}
+					loading="eager"
+					fetchpriority="high"
+					onLoad={handleImageLoad}
+				/>
+			</div>
 
-	<div class="flex-1 flex flex-col items-center justify-center p-4 gap-4">
-		<EnhancedImg
-			imageId={data.photo.image}
-			alt={data.photo.title}
-			className="max-w-full max-h-[calc(100vh-12rem)] object-contain"
-			enableDownload={true}
-			downloadName={data.photo.title}
-			loading="eager"
-			fetchpriority="high"
-		/>
+			<div class="text-center mt-8">
+				<h1 class="text-xl font-light text-gray-900 tracking-wide leading-relaxed">
+					{data.photo.title}
+				</h1>
+			</div>
+		</div>
 	</div>
 </div>
