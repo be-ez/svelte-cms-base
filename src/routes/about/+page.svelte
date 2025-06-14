@@ -4,6 +4,7 @@
 
 	import SEO from '$lib/components/SEO.svelte';
 	import type { DirectusSchema } from '$lib/directus';
+	import { isDarkMode } from '$lib/stores/theme';
 
 	import DefaultPage from '../../components/layout/defaultPage.svelte';
 	import ImageComponent from '../../components/utils/image.svelte';
@@ -41,7 +42,7 @@
 
 <DefaultPage title="About Me">
 	<!-- Public About Content -->
-	<div class="prose dark:prose-invert max-w-none mb-12">
+	<div class="prose prose-lg mx-auto max-w-none mb-12" class:prose-invert={$isDarkMode}>
 		<Markdown md={data.about.content || ''} {plugins}>
 			{#snippet img(props)}
 				<ImageComponent href={props.src || ''} title={props.title} text={props.alt || ''} />
