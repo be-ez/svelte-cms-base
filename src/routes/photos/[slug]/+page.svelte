@@ -46,7 +46,7 @@ Type definitions for Svelte
 	image={seoImageUrl}
 />
 
-<div class="bg-white">
+<div style="background-color: var(--gallery-background);">
 	<div class="max-w-7xl mx-auto px-8 py-8">
 		<div
 			class="flex flex-col items-center justify-center relative"
@@ -112,7 +112,10 @@ Type definitions for Svelte
 			</div>
 
 			<div class="text-center mt-8">
-				<h1 class="text-xl font-light text-gray-900 tracking-wide leading-relaxed">
+				<h1
+					class="text-xl font-inter-medium tracking-wider leading-relaxed"
+					style="color: var(--color-primary);"
+				>
 					{data.photo.title}
 				</h1>
 			</div>

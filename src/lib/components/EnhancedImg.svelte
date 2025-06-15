@@ -120,15 +120,15 @@
 	}
 </script>
 
-<div bind:this={containerElement} class="enhanced-img-container" {style}>
+<span bind:this={containerElement} class="enhanced-img-container" {style}>
 	{#if isLoading}
-		<div class="enhanced-img-placeholder">
-			<div class="loading-skeleton"></div>
-		</div>
+		<span class="enhanced-img-placeholder">
+			<span class="loading-skeleton"></span>
+		</span>
 	{:else if hasError}
-		<div class="enhanced-img-error">
+		<span class="enhanced-img-error">
 			<span>Failed to load image</span>
-		</div>
+		</span>
 	{:else if imageData && isInViewport}
 		{#if enableDownload}
 			<a
@@ -179,9 +179,9 @@
 		{/if}
 	{:else if imageData}
 		<!-- Placeholder while waiting for intersection -->
-		<div class="enhanced-img-placeholder">
-			<div class="intersection-skeleton"></div>
-		</div>
+		<span class="enhanced-img-placeholder">
+			<span class="intersection-skeleton"></span>
+		</span>
 	{:else}
 		<!-- Fallback to original asset if no processed image available -->
 		<img
@@ -193,7 +193,7 @@
 			on:error={handleImageError}
 		/>
 	{/if}
-</div>
+</span>
 
 <style>
 	.enhanced-img-container {

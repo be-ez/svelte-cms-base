@@ -3,6 +3,7 @@
 
 @layer base {
 	:root {
+		/* Light Theme - Default */
 		--background-color: #ffffff;
 		--text-color: #1a1a1a;
 		--color-primary: #111827;
@@ -10,6 +11,10 @@
 		--color-tertiary: #9ca3af;
 		--color-accent: #3b82f6;
 		--color-border: #e5e7eb;
+		--color-hover: #2563eb;
+		--color-hoverSubtle: rgba(0, 0, 0, 0.05);
+
+		/* Gray Scale */
 		--color-gray-100: #f3f4f6;
 		--color-gray-200: #e5e7eb;
 		--color-gray-300: #d1d5db;
@@ -17,25 +22,34 @@
 		--color-gray-600: #4b5563;
 		--color-gray-700: #374151;
 		--color-gray-800: #1f2937;
-		--color-hoverSubtle: rgba(0, 0, 0, 0.05);
+
+		/* Gallery specific (light mode = white) */
+		--gallery-background: #ffffff;
 	}
 
 	.dark {
+		/* Dark Theme */
 		--background-color: #1f2937;
 		--text-color: #ffffff;
-		--color-primary: #f9fafb;
+		--color-primary: #ffffff;
 		--color-secondary: #9ca3af;
-		--color-tertiary: #6b7280;
+		--color-tertiary: #d1d5db;
 		--color-accent: #60a5fa;
 		--color-border: #374151;
-		--color-gray-100: #374151;
-		--color-gray-200: #4b5563;
-		--color-gray-300: #6b7280;
+		--color-hover: #3b82f6;
+		--color-hoverSubtle: rgba(255, 255, 255, 0.1);
+
+		/* Gray Scale (inverted for dark mode) */
+		--color-gray-100: #1f2937;
+		--color-gray-200: #374151;
+		--color-gray-300: #4b5563;
 		--color-gray-500: #9ca3af;
 		--color-gray-600: #d1d5db;
 		--color-gray-700: #e5e7eb;
 		--color-gray-800: #f3f4f6;
-		--color-hoverSubtle: rgba(255, 255, 255, 0.1);
+
+		/* Gallery specific (dark mode = neutral gray) */
+		--gallery-background: #2a2a2a;
 	}
 
 	html {
@@ -52,9 +66,20 @@
 		margin: 0;
 		padding: 0;
 		background-color: var(--background-color);
+		color: var(--color-primary);
 		transition:
 			background-color 200ms ease-in-out,
 			color 200ms ease-in-out;
+	}
+
+	/* Theme Variants */
+	.theme-default {
+		/* Uses default CSS variables */
+	}
+
+	.theme-gallery {
+		/* Override for gallery pages */
+		--background-color: var(--gallery-background);
 	}
 }
 

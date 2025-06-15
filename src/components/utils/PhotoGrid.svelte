@@ -72,7 +72,7 @@
 				<div class="photo-item m-0 p-0">
 					<a
 						href={item ? `${item.baseUrl}/${encodeURIComponent(item.slug)}` : ''}
-						class="block m-0 p-0"
+						class="block m-0 p-0 relative group"
 					>
 						{#if imageId}
 							<ResponsiveImage
@@ -98,6 +98,19 @@
 						{:else}
 							<div class="placeholder-image">
 								<span>{item.title}</span>
+							</div>
+						{/if}
+
+						<!-- Title overlay for recipes -->
+						{#if itemType === 'recipe'}
+							<div
+								class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pointer-events-none"
+							>
+								<h3
+									class="text-white text-lg font-medium group-hover:drop-shadow-lg transition-all duration-200"
+								>
+									{item.title}
+								</h3>
 							</div>
 						{/if}
 					</a>
