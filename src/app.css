@@ -125,6 +125,36 @@
 	padding: 0 !important;
 }
 
+/* Recipe image sizing */
+.prose .enhanced-img-container {
+	display: block;
+	max-width: 400px;
+	margin: 1rem auto 2rem auto;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.prose .enhanced-img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+/* Desktop: float images right with text wrap */
+@media (min-width: 768px) {
+	.prose .enhanced-img-container {
+		float: right;
+		margin: 0 0 1.5rem 2rem;
+		max-width: 300px;
+		clear: right;
+	}
+
+	/* Ensure paragraphs can wrap around floated images */
+	.prose p {
+		text-align: justify;
+	}
+}
+
 /* Font utilities */
 .font-inter {
 	font-family: var(--font-primary);
