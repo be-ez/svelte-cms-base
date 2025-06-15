@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import type { ImageSizeKey } from '$lib/image-config';
 	import { getProcessedImage, type ProcessedImageData } from '$lib/stores/images';
 
 	import EnhancedImg from './EnhancedImg.svelte';
@@ -19,7 +20,7 @@
 	export let objectFit: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down' = 'cover';
 	export let width: string | undefined = undefined;
 	export let height: string | undefined = undefined;
-	export let defaultSize: 'thumbnail' | 'small' | 'medium' | 'large' | 'display' = 'display'; // Image size to use
+	export let defaultSize: ImageSizeKey = 'display'; // Image size to use
 
 	// For SSR optimization - if you already have the image data
 	export let preloadedImageData: ProcessedImageData | undefined = undefined;

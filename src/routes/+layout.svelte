@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { type GlobalSettings,globalSettings } from '$lib/stores/global';
+	import { type GlobalSettings, globalSettings } from '$lib/stores/global';
+	import { viewport } from '$lib/stores/viewport'; // Initialize viewport tracking app-wide
 
 	import Footer from '../components/layout/footer.svelte';
 	import Header from '../components/layout/header.svelte';

@@ -38,7 +38,7 @@
 
 	// State
 	let imageData: ProcessedImageData | null = null;
-	let isLoading = true;
+	let isLoadingMetadata = true;
 	let hasError = false;
 	let isInViewport = false;
 	let imgElement: HTMLImageElement;
@@ -53,6 +53,8 @@
 	onMount(async () => {
 		try {
 			imageData = await getProcessedImage(imageId);
+			isLoadingMetadata = false;
+
 			if (!imageData) {
 				// In development, this is expected - fallback to direct asset URL
 				if (import.meta.env.DEV) {
@@ -61,7 +63,6 @@
 					console.warn(`No processed image found for ID: ${imageId}`);
 				}
 				hasError = true;
-				isLoading = false;
 				return;
 			}
 
@@ -75,8 +76,7 @@
 		} catch (error) {
 			console.error(`Error loading image ${imageId}:`, error);
 			hasError = true;
-		} finally {
-			isLoading = false;
+			isLoadingMetadata = false;
 		}
 	});
 
@@ -123,11 +123,9 @@
 </script>
 
 <span bind:this={containerElement} class="enhanced-img-container" {style}>
-	{#if isLoading}
-		<ImagePlaceholder
-			aspectRatio={imageData?.metadata.aspectRatio || 1}
-			className="enhanced-img-placeholder"
-		/>
+	{#if isLoadingMetadata}
+		<!-- Loading metadata - show basic placeholder -->
+		<ImagePlaceholder aspectRatio={1.33} className="enhanced-img-placeholder" />
 	{:else if hasError}
 		<span class="enhanced-img-error">
 			<span>Failed to load image</span>
@@ -181,7 +179,7 @@
 			</picture>
 		{/if}
 	{:else if imageData}
-		<!-- Placeholder while waiting for intersection -->
+		<!-- Placeholder while waiting for intersection - now has correct aspect ratio -->
 		<ImagePlaceholder
 			aspectRatio={imageData.metadata.aspectRatio}
 			className="enhanced-img-placeholder"

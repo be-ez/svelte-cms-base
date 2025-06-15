@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
+	import { BREAKPOINTS, getGalleryImageSize, viewport } from '$lib/stores/viewport';
 
 	export let items: {
 		slug: string;
@@ -50,15 +51,16 @@
 		return result;
 	}
 
-	// Get current column count based on screen size
-	let innerWidth = 0;
-	$: columnCount = innerWidth <= 640 ? 2 : innerWidth <= 1024 ? 2 : 3;
+	// Get current column count based on centralized breakpoints
+	$: columnCount =
+		$viewport.width <= BREAKPOINTS.mobile ? 2 : $viewport.width <= BREAKPOINTS.laptop ? 2 : 3;
+
+	// Get responsive image size for gallery
+	$: imageSize = $getGalleryImageSize;
 
 	// Reorganized items for proper row ordering
 	$: reorganizedItems = reorganizeForRowOrder(items, columnCount);
 </script>
-
-<svelte:window bind:innerWidth />
 
 <div class="m-0 p-0">
 	{#if loading}
@@ -85,7 +87,7 @@
 								objectFit={isPinterestStyle ? 'scale-down' : 'cover'}
 								rootMargin={index < eagerLoadCount ? '200px' : '50px'}
 								threshold={0.1}
-								defaultSize="thumbnail"
+								defaultSize={imageSize}
 							/>
 						{:else if item.processedPath}
 							<img
