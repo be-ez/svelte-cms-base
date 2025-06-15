@@ -23,11 +23,11 @@
 	export let downloadName: string | undefined = undefined;
 
 	// Generate responsive sizes attribute
-	$: responsiveSizes = sizes || imageData.getSizes();
+	$: responsiveSizes = sizes || imageData.getSizes(defaultSize);
 
 	// Generate srcset for each format
-	$: webpSrcSet = imageData.getSrcSet('webp');
-	$: jpgSrcSet = imageData.getSrcSet('jpg');
+	$: webpSrcSet = imageData.getSrcSet('webp', defaultSize);
+	$: jpgSrcSet = imageData.getSrcSet('jpg', defaultSize);
 
 	// Get default/fallback image URL
 	$: defaultImageUrl = imageData.getUrl(defaultSize, defaultFormat);

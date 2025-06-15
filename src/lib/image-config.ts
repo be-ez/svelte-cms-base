@@ -122,7 +122,7 @@ export interface ProcessedImageData {
 			};
 		};
 	};
-	getSrcSet: (format: ImageFormatKey) => string;
-	getSizes: () => string;
+	getSrcSet: (format: ImageFormatKey, maxSize?: ImageSizeKey) => string;
+	getSizes: (maxSize?: ImageSizeKey) => string;
 	getUrl: (size: ImageSizeKey, format: ImageFormatKey) => string;
 }

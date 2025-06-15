@@ -106,9 +106,16 @@ export class ImageService {
 				aspectRatio: 1
 			},
 			sizes: processedSizes,
-			getSrcSet(format: ImageFormatKey) {
+			getSrcSet(format: ImageFormatKey, maxSize?: ImageSizeKey) {
+				const sizeOrder: ImageSizeKey[] = ['thumbnail', 'small', 'medium', 'large', 'display'];
+				const maxIndex = maxSize ? sizeOrder.indexOf(maxSize) : sizeOrder.length - 1;
+
 				return Object.entries(IMAGE_SIZES)
 					.filter(([name]) => name !== 'original')
+					.filter(([name]) => {
+						const index = sizeOrder.indexOf(name as ImageSizeKey);
+						return index <= maxIndex;
+					})
 					.map(([name, _config]) => {
 						const { url, width } = this.sizes[name as ImageSizeKey][format];
 						return width ? `${url} ${width}w` : '';
@@ -116,7 +123,13 @@ export class ImageService {
 					.filter(Boolean)
 					.join(', ');
 			},
-			getSizes() {
+			getSizes(maxSize?: ImageSizeKey) {
+				if (maxSize) {
+					const maxWidth = IMAGE_SIZES[maxSize].width;
+					if (maxWidth) {
+						return `${maxWidth}px`;
+					}
+				}
 				return getResponsiveSizes();
 			},
 			getUrl(size: ImageSizeKey, format: ImageFormatKey) {
