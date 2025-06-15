@@ -80,9 +80,9 @@
 		{defaultSize}
 	/>
 {:else}
-	<!-- SSR fallback - use processed thumbnail instead of full asset -->
+	<!-- SSR fallback - use original asset to ensure build succeeds -->
 	<img
-		src="/images/processed/{src}-{defaultSize}.webp"
+		src="/assets/{src}"
 		{alt}
 		{title}
 		loading={eager ? 'eager' : 'lazy'}
