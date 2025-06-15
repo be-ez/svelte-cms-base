@@ -15,7 +15,10 @@
       "mcp__directus__users-me",
       "mcp__directus__read-items",
       "mcp__directus__create-item",
-      "mcp__directus__update-item"
+      "mcp__directus__update-item",
+      "Bash(source .env)",
+      "Bash(curl:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

@@ -33,7 +33,7 @@
 	<div class="px-6 md:px-8">
 		{#if isMobile}
 			<!-- Mobile Layout -->
-			<div class="flex justify-between items-center h-full py-3">
+			<div class="flex justify-between items-center h-full py-2">
 				<!-- Left side: Home + About -->
 				<div class="flex items-center gap-1">
 					<a href="/" class="text-sm nav-link" aria-label="Go to homepage">🏠</a>
@@ -109,7 +109,7 @@
 			</div>
 		{:else}
 			<!-- Desktop Layout -->
-			<div class="py-4">
+			<div class="py-2">
 				<div class="grid grid-cols-3 items-center">
 					<!-- Left: About + Home -->
 					<div class="flex items-center gap-2">

@@ -2,8 +2,6 @@ import { writable } from 'svelte/store';
 
 import { browser } from '$app/environment';
 
-import { darkTheme, lightTheme, type ThemeConfig } from '../theme/config';
-
 // Create a store for dark mode preference
 function createDarkModeStore() {
 	// Check if dark class is already set (from app.html)
@@ -53,77 +51,8 @@ if (browser) {
 	});
 }
 
-function createThemeStore() {
-	const { subscribe, set, update } = writable<ThemeConfig>(lightTheme);
-
-	// Initialize theme based on stored preference (if not already set by app.html)
-	if (browser) {
-		const isDark = document.documentElement.classList.contains('dark');
-		// Only update CSS variables, classes and localStorage are handled by app.html
-		updateCssVariables(isDark ? darkTheme : lightTheme);
-		// Sync the isDarkMode store
-		isDarkMode.set(isDark);
-	}
-
-	// Subscribe to dark mode changes
-	if (browser) {
-		isDarkMode.subscribe(isDark => {
-			const newTheme = isDark ? darkTheme : lightTheme;
-			set(newTheme);
-			updateCssVariables(newTheme);
-		});
-	}
-
-	return {
-		subscribe,
-		update: (newTheme: Partial<ThemeConfig>) => {
-			update(theme => ({ ...theme, ...newTheme }));
-			if (browser) {
-				updateCssVariables(newTheme);
-			}
-		},
-		reset: () => {
-			const defaultTheme =
-				browser && localStorage.getItem('theme') === 'dark' ? darkTheme : lightTheme;
-			set(defaultTheme);
-			if (browser) {
-				updateCssVariables(defaultTheme);
-			}
-		}
-	};
-}
-
-function updateCssVariables(theme: Partial<ThemeConfig>) {
-	if (!browser) return;
-
-	const root = document.documentElement;
-
-	if (theme.colors) {
-		// Set main colors
-		Object.entries(theme.colors).forEach(([key, value]) => {
-			if (typeof value === 'string') {
-				root.style.setProperty(`--color-${key}`, value);
-				// Also set background-color for the main background
-				if (key === 'background') {
-					root.style.setProperty('--background-color', value);
-				}
-			} else if (key === 'gray' && typeof value === 'object') {
-				// Handle nested gray colors
-				Object.entries(value).forEach(([shade, color]) => {
-					root.style.setProperty(`--color-gray-${shade}`, color);
-				});
-			}
-		});
-	}
-
-	if (theme.fonts) {
-		root.style.setProperty('--font-primary', theme.fonts.primary);
-		if (theme.fonts.weights) {
-			Object.entries(theme.fonts.weights).forEach(([key, value]) => {
-				root.style.setProperty(`--font-weight-${key}`, value);
-			});
-		}
-	}
-}
-
-export const theme = createThemeStore();
+// Simplified theme store since CSS variables are now handled by app.css
+export const theme = {
+	// This can be used for any future theme-related state
+	// All styling is now handled by CSS custom properties
+};
