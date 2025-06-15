@@ -100,6 +100,11 @@ export class ImageService {
 		return {
 			id,
 			originalUrl: raw.originalPath,
+			metadata: raw.metadata || {
+				width: 0,
+				height: 0,
+				aspectRatio: 1
+			},
 			sizes: processedSizes,
 			getSrcSet(format: ImageFormatKey) {
 				return Object.entries(IMAGE_SIZES)

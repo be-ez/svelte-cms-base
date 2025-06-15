@@ -12,11 +12,11 @@ const { authentication, createDirectus, rest } = require('@directus/sdk');
 
 // Configuration
 const IMAGE_SIZES = {
-	thumbnail: { width: 150 },
-	small: { width: 400 },
-	medium: { width: 800 },
-	large: { width: 1200 },
-	display: { width: 1920 },
+	thumbnail: { width: 400 },
+	small: { width: 800 },
+	medium: { width: 1200 },
+	large: { width: 1800 },
+	display: { width: 2400 },
 	original: { width: null }
 };
 
@@ -44,8 +44,19 @@ async function downloadImage(url, token) {
 }
 
 async function processImage(buffer, imageId, outputDir) {
+	// Get original image metadata
+	const metadata = await sharp(buffer).metadata();
+	const originalWidth = metadata.width || 0;
+	const originalHeight = metadata.height || 0;
+	const aspectRatio = originalHeight > 0 ? originalWidth / originalHeight : 1;
+
 	const processedImage = {
 		originalPath: `${process.env.DIRECTUS_API_URL}/assets/${imageId}`,
+		metadata: {
+			width: originalWidth,
+			height: originalHeight,
+			aspectRatio: Math.round(aspectRatio * 1000) / 1000 // Round to 3 decimal places
+		},
 		sizes: {}
 	};
 
