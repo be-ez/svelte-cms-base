@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "vite dev",
     "dev:process-images": "node scripts/process-images-standalone.cjs",
+    "clean:images": "rm -rf static/images/processed static/image-manifest.json",
+    "refresh:images": "pnpm run clean:images && pnpm run dev:process-images",
     "build": "vite build && node scripts/copy-static-assets.js",
     "build:only": "vite build",
     "preview": "vite preview",

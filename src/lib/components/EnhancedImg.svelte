@@ -8,6 +8,8 @@
 		isIntersectionObserverSupported
 	} from '$lib/utils/intersectionObserver';
 
+	import ImagePlaceholder from './ImagePlaceholder.svelte';
+
 	// Required props
 	export let imageId: string;
 	export let alt: string;
@@ -122,9 +124,10 @@
 
 <span bind:this={containerElement} class="enhanced-img-container" {style}>
 	{#if isLoading}
-		<span class="enhanced-img-placeholder">
-			<span class="loading-skeleton"></span>
-		</span>
+		<ImagePlaceholder
+			aspectRatio={imageData?.metadata.aspectRatio || 1}
+			className="enhanced-img-placeholder"
+		/>
 	{:else if hasError}
 		<span class="enhanced-img-error">
 			<span>Failed to load image</span>
@@ -179,9 +182,11 @@
 		{/if}
 	{:else if imageData}
 		<!-- Placeholder while waiting for intersection -->
-		<span class="enhanced-img-placeholder">
-			<span class="intersection-skeleton"></span>
-		</span>
+		<ImagePlaceholder
+			aspectRatio={imageData.metadata.aspectRatio}
+			className="enhanced-img-placeholder"
+			animated={false}
+		/>
 	{:else}
 		<!-- Fallback to original asset if no processed image available -->
 		<img
@@ -199,47 +204,6 @@
 	.enhanced-img-container {
 		position: relative;
 		display: inline-block;
-	}
-
-	.enhanced-img-placeholder {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background-color: #f0f0f0;
-		width: 100%;
-		min-height: 200px;
-	}
-
-	.loading-skeleton,
-	.intersection-skeleton {
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-		background-size: 200% 100%;
-		animation: loading 1.5s infinite;
-	}
-
-	.intersection-skeleton {
-		background: linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%);
-		animation: pulse 2s ease-in-out infinite alternate;
-	}
-
-	@keyframes loading {
-		0% {
-			background-position: 200% 0;
-		}
-		100% {
-			background-position: -200% 0;
-		}
-	}
-
-	@keyframes pulse {
-		0% {
-			opacity: 1;
-		}
-		100% {
-			opacity: 0.5;
-		}
 	}
 
 	.enhanced-img-error {

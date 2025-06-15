@@ -93,6 +93,11 @@ export function getResponsiveSizes(): string {
 // Manifest structure that matches what image-pipeline generates
 export interface ProcessedImage {
 	originalPath: string;
+	metadata: {
+		width: number;
+		height: number;
+		aspectRatio: number;
+	};
 	sizes: {
 		[K in ImageSizeKey]: {
 			[F in ImageFormatKey]: string;
@@ -104,6 +109,11 @@ export interface ProcessedImage {
 export interface ProcessedImageData {
 	id: string;
 	originalUrl: string;
+	metadata: {
+		width: number;
+		height: number;
+		aspectRatio: number;
+	};
 	sizes: {
 		[K in ImageSizeKey]: {
 			[F in ImageFormatKey]: {

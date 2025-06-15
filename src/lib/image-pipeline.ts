@@ -88,6 +88,11 @@ async function processImage(
 
 	const processedImage: ProcessedImage = {
 		originalPath: originalUrl, // Store the original file URL
+		metadata: {
+			width: metadata.width || 0,
+			height: metadata.height || 0,
+			aspectRatio: metadata.width && metadata.height ? metadata.width / metadata.height : 1
+		},
 		sizes: {} as ProcessedImage['sizes']
 	};
 
@@ -273,6 +278,11 @@ async function processBatch(
 					// Return a basic manifest entry for existing image
 					const processedImage: ProcessedImage = {
 						originalPath: url,
+						metadata: {
+							width: 0,
+							height: 0,
+							aspectRatio: 1
+						},
 						sizes: {} as any
 					};
 
