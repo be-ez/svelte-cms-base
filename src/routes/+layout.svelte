@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+
+	import { type GlobalSettings,globalSettings } from '$lib/stores/global';
+
 	import Footer from '../components/layout/footer.svelte';
 	import Header from '../components/layout/header.svelte';
-	import { globalSettings, type GlobalSettings } from '$lib/stores/global';
 
 	import '../app.css';
 

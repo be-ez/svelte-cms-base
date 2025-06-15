@@ -19,6 +19,7 @@
 	export let objectFit: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down' = 'cover';
 	export let width: string | undefined = undefined;
 	export let height: string | undefined = undefined;
+	export let defaultSize: 'thumbnail' | 'small' | 'medium' | 'large' | 'display' = 'display'; // Image size to use
 
 	// For SSR optimization - if you already have the image data
 	export let preloadedImageData: ProcessedImageData | undefined = undefined;
@@ -62,6 +63,7 @@
 		fetchpriority={priority ? 'high' : 'auto'}
 		{className}
 		style={styleString}
+		{defaultSize}
 	/>
 {:else if isClient}
 	<EnhancedImg
@@ -74,6 +76,7 @@
 		style={styleString}
 		{rootMargin}
 		{threshold}
+		{defaultSize}
 	/>
 {:else}
 	<!-- SSR fallback -->
