@@ -2,12 +2,17 @@
 	import { onMount } from 'svelte';
 
 	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
+	import { globalSettings } from '$lib/stores/global';
 
-	let navItems = [
+	// Default navigation items as fallback
+	const defaultNavItems = [
 		{ name: 'Recipes', icon: '🍲', href: '/recipes' },
 		{ name: 'Photos', icon: '📷', href: '/photos' },
 		{ name: 'Posts', icon: '💻', href: '/posts' }
 	];
+
+	$: navItems = $globalSettings?.navigation_menu || defaultNavItems;
+	$: authorName = $globalSettings?.author_name || '';
 
 	let currentPath = '';
 
@@ -35,11 +40,13 @@
 			<!-- Left side: Home + About -->
 			<div class="w-16 flex items-center gap-1">
 				<a href="/" class="text-sm nav-link" aria-label="Go to homepage">🏠</a>
-				<a
-					href="/about"
-					class="text-2xl font-bold nav-link {currentPath === '/about' ? 'underline' : ''}"
-					on:click|stopPropagation>Alex</a
-				>
+				{#if authorName}
+					<a
+						href="/about"
+						class="text-2xl font-bold nav-link {currentPath === '/about' ? 'underline' : ''}"
+						on:click|stopPropagation>{authorName}</a
+					>
+				{/if}
 			</div>
 
 			<!-- Center: Back button and Title -->

@@ -3,13 +3,19 @@
 
 	import { page } from '$app/stores';
 	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
+	import { globalSettings } from '$lib/stores/global';
 
-	let navItems = [
+	const currentPath = derived(page, $page => $page.url.pathname);
+
+	// Default navigation items as fallback
+	const defaultNavItems = [
 		{ name: 'Recipes', icon: '🍲', href: '/recipes' },
 		{ name: 'Photos', icon: '📷', href: '/photos' },
 		{ name: 'Posts', icon: '💻', href: '/posts' }
 	];
-	const currentPath = derived(page, $page => $page.url.pathname);
+
+	$: navItems = $globalSettings?.navigation_menu || defaultNavItems;
+	$: authorName = $globalSettings?.author_name || '';
 </script>
 
 <nav class="desktop-navbar w-full bg-page border-b nav-border">
@@ -18,12 +24,14 @@
 			<!-- Left: About + Home -->
 			<div class="flex items-center gap-2">
 				<a href="/" class="text-lg nav-link" aria-label="Go to homepage">🏠</a>
-				<a
-					href="/about"
-					class="text-2xl font-bold nav-link {$currentPath === '/about' ? 'underline' : ''}"
-				>
-					Alex
-				</a>
+				{#if authorName}
+					<a
+						href="/about"
+						class="text-2xl font-bold nav-link {$currentPath === '/about' ? 'underline' : ''}"
+					>
+						{authorName}
+					</a>
+				{/if}
 			</div>
 
 			<!-- Center: Title with optional back button -->

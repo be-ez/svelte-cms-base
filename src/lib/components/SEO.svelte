@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { generateJSONLD, generateMetaTags, type SEOConfig } from '$lib/seo';
+	import { globalSettings } from '$lib/stores/global';
 
 	interface Props {
 		title: string;
@@ -12,7 +13,7 @@
 
 	let { title, description, image, article, type = 'WebPage' }: Props = $props();
 
-	const siteTitle = 'Personal Website';
+	const siteTitle = $derived($globalSettings?.Title || '');
 	const fullTitle = $derived(title === siteTitle ? title : `${title} | ${siteTitle}`);
 
 	const config = $derived<SEOConfig>({

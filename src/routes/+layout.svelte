@@ -1,8 +1,22 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Footer from '../components/layout/footer.svelte';
 	import Header from '../components/layout/header.svelte';
+	import { globalSettings, type GlobalSettings } from '$lib/stores/global';
 
 	import '../app.css';
+
+	export let data: { global: GlobalSettings | null };
+
+	onMount(() => {
+		if (data.global) {
+			globalSettings.set(data.global);
+			// Initialize analytics after global settings are loaded
+			import('$lib/utils/analytics').then(({ initializeAnalytics }) => {
+				initializeAnalytics();
+			});
+		}
+	});
 </script>
 
 <!-- Skip to content link for screen readers -->
