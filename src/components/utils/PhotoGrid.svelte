@@ -85,6 +85,7 @@
 								objectFit={isPinterestStyle ? 'scale-down' : 'cover'}
 								rootMargin={index < eagerLoadCount ? '200px' : '50px'}
 								threshold={0.1}
+								defaultSize="thumbnail"
 							/>
 						{:else if item.processedPath}
 							<img

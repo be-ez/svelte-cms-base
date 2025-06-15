@@ -1,15 +1,36 @@
 <script lang="ts">
-	import ThemeToggle from '../utils/ThemeToggle.svelte';
 	import { globalSettings } from '$lib/stores/global';
 
-	$: socials = $globalSettings ? [
-		...(($globalSettings.social_github && { name: 'GitHub', href: $globalSettings.social_github, icon: '💻' }) ? [{ name: 'GitHub', href: $globalSettings.social_github, icon: '💻' }] : []),
-		...(($globalSettings.social_linkedin && { name: 'LinkedIn', href: $globalSettings.social_linkedin, icon: '💼' }) ? [{ name: 'LinkedIn', href: $globalSettings.social_linkedin, icon: '💼' }] : []),
-		...(($globalSettings.social_instagram && { name: 'Instagram', href: $globalSettings.social_instagram, icon: '📸' }) ? [{ name: 'Instagram', href: $globalSettings.social_instagram, icon: '📸' }] : [])
-	] : [];
+	import ThemeToggle from '../utils/ThemeToggle.svelte';
+
+	$: socials = $globalSettings
+		? [
+				...($globalSettings.social_github && {
+					name: 'GitHub',
+					href: $globalSettings.social_github,
+					icon: '💻'
+				}
+					? [{ name: 'GitHub', href: $globalSettings.social_github, icon: '💻' }]
+					: []),
+				...($globalSettings.social_linkedin && {
+					name: 'LinkedIn',
+					href: $globalSettings.social_linkedin,
+					icon: '💼'
+				}
+					? [{ name: 'LinkedIn', href: $globalSettings.social_linkedin, icon: '💼' }]
+					: []),
+				...($globalSettings.social_instagram && {
+					name: 'Instagram',
+					href: $globalSettings.social_instagram,
+					icon: '📸'
+				}
+					? [{ name: 'Instagram', href: $globalSettings.social_instagram, icon: '📸' }]
+					: [])
+			]
+		: [];
 
 	$: contactEmail = $globalSettings?.contact_email || '';
-	$: currentYear = new Date().getFullYear();
+	const currentYear = new Date().getFullYear();
 </script>
 
 <footer class="bg-background py-1 nav-border items-center">

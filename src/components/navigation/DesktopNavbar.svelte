@@ -2,8 +2,8 @@
 	import { derived } from 'svelte/store';
 
 	import { page } from '$app/stores';
-	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 	import { globalSettings } from '$lib/stores/global';
+	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 
 	const currentPath = derived(page, $page => $page.url.pathname);
 

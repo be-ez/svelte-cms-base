@@ -25,9 +25,7 @@ cd <project-name>
 2. Install dependencies
 
 ```bash
-npm install
-# or
-yarn install
+pnpm install
 ```
 
 3. Set up environment variables
@@ -42,8 +40,6 @@ DIRECTUS_API_URL=your_directus_url
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 Visit `http://localhost:5173` to see your application.

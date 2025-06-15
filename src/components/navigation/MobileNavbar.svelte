@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 	import { globalSettings } from '$lib/stores/global';
+	import { pageSubtitle, pageTitle, showBackButton } from '$lib/stores/navigation';
 
 	// Default navigation items as fallback
 	const defaultNavItems = [

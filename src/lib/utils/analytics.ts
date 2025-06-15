@@ -22,11 +22,11 @@ export function initializeAnalytics() {
 
 	// Add Plausible global function
 	if (!window.plausible) {
-		window.plausible =
-			window.plausible ||
-			function (...args: unknown[]) {
-				(window.plausible.q = window.plausible.q || []).push(args);
-			};
+		const plausibleFn = function (...args: unknown[]) {
+			(plausibleFn.q = plausibleFn.q || []).push(args);
+		} as any;
+		plausibleFn.q = [];
+		window.plausible = plausibleFn;
 	}
 
 	document.head.appendChild(script);
@@ -35,6 +35,6 @@ export function initializeAnalytics() {
 // Type declaration for TypeScript
 declare global {
 	interface Window {
-		plausible: (...args: unknown[]) => void & { q?: unknown[] };
+		plausible: any;
 	}
 }
