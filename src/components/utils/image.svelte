@@ -25,7 +25,6 @@
 		alt={text}
 		title={title || undefined}
 		enableDownload={downloadable}
-		downloadName={imageId}
 		className={downloadable ? 'cursor-pointer' : ''}
 	/>
 {:else}
