@@ -132,7 +132,7 @@
 	{:else if imageData && isInViewport}
 		{#if enableDownload}
 			<a
-				href="/assets/{imageId}"
+				href={imageData.getUrl('original', 'jpg')}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="enhanced-img-link"
