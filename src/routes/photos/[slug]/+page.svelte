@@ -103,7 +103,6 @@ Type definitions for Svelte
 						alt={data.photo.title}
 						className="max-w-[85vw] max-h-[calc(100vh-14rem)] object-contain shadow-2xl"
 						enableDownload={true}
-						downloadName={data.photo.title}
 						loading="eager"
 						fetchpriority="high"
 						onLoad={handleImageLoad}

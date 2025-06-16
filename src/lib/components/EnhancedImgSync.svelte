@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { ImageFormatKey, ImageSizeKey } from '$lib/image-config';
+	import type { ImageFormatKey } from '$lib/image-config';
+	import type { ImageSizeKey } from '$lib/image-config';
 	import type { ProcessedImageData } from '$lib/stores/images';
 
 	// Required props

@@ -28,7 +28,6 @@
 	export let sizes: string | undefined = undefined;
 	export let pictureClass: string = '';
 	export let enableDownload = false;
-	export let downloadName: string | undefined = undefined;
 	export let onLoad: ((event: Event) => void) | undefined = undefined;
 
 	// Intersection Observer options
@@ -57,9 +56,7 @@
 
 			if (!imageData) {
 				// In development, this is expected - fallback to direct asset URL
-				if (import.meta.env.DEV) {
-					console.info(`Image ${imageId} not processed yet - using direct asset URL`);
-				} else {
+				if (!import.meta.env.DEV) {
 					console.warn(`No processed image found for ID: ${imageId}`);
 				}
 				hasError = true;
@@ -135,8 +132,9 @@
 	{:else if imageData && isInViewport}
 		{#if enableDownload}
 			<a
-				href={imageData.originalUrl || defaultImageUrl}
-				download={downloadName || imageId}
+				href="/assets/{imageId}"
+				target="_blank"
+				rel="noopener noreferrer"
 				class="enhanced-img-link"
 			>
 				<picture class={pictureClass}>
