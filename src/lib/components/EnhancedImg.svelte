@@ -106,8 +106,10 @@
 	$: webpSrcSet = imageData?.getSrcSet('webp', defaultSize) || '';
 	$: jpgSrcSet = imageData?.getSrcSet('jpg', defaultSize) || '';
 
-	// Get default/fallback image URL
-	$: defaultImageUrl = imageData?.getUrl(defaultSize, defaultFormat) || `/assets/${imageId}`;
+	// Get default/fallback image URL - only use asset fallback if metadata loading is complete
+	$: defaultImageUrl =
+		imageData?.getUrl(defaultSize, defaultFormat) ||
+		(!isLoadingMetadata ? `/assets/${imageId}` : '');
 
 	// Handle image load event
 	function handleImageLoad(event: Event) {
@@ -185,8 +187,8 @@
 			className="enhanced-img-placeholder"
 			animated={false}
 		/>
-	{:else}
-		<!-- Fallback to original asset if no processed image available -->
+	{:else if !isLoadingMetadata}
+		<!-- Only show fallback if we've finished loading metadata and still no image data -->
 		<img
 			src="/assets/{imageId}"
 			{alt}

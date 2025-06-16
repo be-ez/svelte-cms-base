@@ -80,13 +80,12 @@
 		{defaultSize}
 	/>
 {:else}
-	<!-- SSR fallback - use original asset to ensure build succeeds -->
-	<img
-		src="/assets/{src}"
-		{alt}
-		{title}
-		loading={eager ? 'eager' : 'lazy'}
-		class={className}
-		style={styleString}
-	/>
+	<!-- SSR fallback - use placeholder to avoid large asset downloads -->
+	<div
+		class="image-placeholder {className}"
+		style="aspect-ratio: 4/3; background: #f0f0f0; display: flex; align-items: center; justify-content: center; min-height: 200px; {styleString}"
+		aria-label={alt}
+	>
+		<span style="color: #999; font-size: 0.875rem;">Loading...</span>
+	</div>
 {/if}
