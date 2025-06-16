@@ -35,8 +35,8 @@ release:
   image: node:22-alpine
   variables:
     GIT_DEPTH: 0
-    GITLAB_TOKEN: $CI_JOB_TOKEN
-    GL_TOKEN: $CI_JOB_TOKEN
+    GITLAB_TOKEN: $GITLAB_RELEASE_TOKEN
+    GL_TOKEN: $GITLAB_RELEASE_TOKEN
   before_script:
     - apk add --no-cache git
     - corepack enable
