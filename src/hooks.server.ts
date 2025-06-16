@@ -78,8 +78,24 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	});
 
-	// Security headers
+	// Cache control for static assets
 	const headers = new Headers(response.headers);
+	const url = new URL(event.request.url);
+
+	// Long cache for immutable assets (SvelteKit's hashed files)
+	if (url.pathname.startsWith('/_app/') || url.pathname.startsWith('/images/processed/')) {
+		headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+	}
+	// Medium cache for other static assets
+	else if (url.pathname.match(/\.(css|js|woff2?|png|jpg|jpeg|webp|svg|ico)$/)) {
+		headers.set('Cache-Control', 'public, max-age=86400');
+	}
+	// Short cache for HTML pages
+	else if (url.pathname.endsWith('.html') || !url.pathname.includes('.')) {
+		headers.set('Cache-Control', 'public, max-age=3600, must-revalidate');
+	}
+
+	// Security headers
 	headers.set('X-Content-Type-Options', 'nosniff');
 	headers.set('X-Frame-Options', 'DENY');
 	headers.set('X-XSS-Protection', '1; mode=block');
