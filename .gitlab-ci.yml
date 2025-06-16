@@ -46,7 +46,9 @@ release:
     - git config --global user.name "GitLab CI"
   script:
     - npx semantic-release
-    - echo "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\"\\,]//g' | tr -d '[:space:]')" >> release.env
+    - |
+      VERSION=$(node -p "require('./package.json').version")
+      echo "VERSION=$VERSION" >> release.env
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
