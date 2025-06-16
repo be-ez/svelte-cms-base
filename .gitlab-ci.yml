@@ -2,6 +2,7 @@ image: node:current-alpine
 
 stages:
   - test
+  - release
   - build
   - deploy
   - rebuild
@@ -29,17 +30,46 @@ test:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main"'
 
+release:
+  stage: release
+  image: node:22-alpine
+  variables:
+    GIT_DEPTH: 0
+    GITLAB_TOKEN: $CI_JOB_TOKEN
+    GL_TOKEN: $CI_JOB_TOKEN
+  before_script:
+    - apk add --no-cache git
+    - corepack enable
+    - pnpm install
+    # Configure git for commits
+    - git config --global user.email "ci@gitlab.com"
+    - git config --global user.name "GitLab CI"
+  script:
+    - npx semantic-release
+    - echo "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\"\\,]//g' | tr -d '[:space:]')" >> release.env
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+  artifacts:
+    reports:
+      dotenv: release.env
+
 build-complete:
-  stage: test
+  stage: build
   image: docker:24
   services:
     - docker:24-dind
   variables:
     DOCKER_HOST: unix:///var/run/docker.sock
+  dependencies:
+    - release
   interruptible: true
   before_script:
     # Login to GitLab Container Registry
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    # Load version from release job
+    - if [ -f release.env ]; then source release.env; fi
+    - echo "Building version ${VERSION:-latest}"
   script:
     # Build x86_64-only complete build (images + static site) and push
     - |
@@ -50,11 +80,12 @@ build-complete:
         --build-arg DIRECTUS_TOKEN=$DIRECTUS_TOKEN \
         --tag $CI_REGISTRY_IMAGE:complete-build-$CI_COMMIT_SHA \
         --tag $CI_REGISTRY_IMAGE:complete-build-latest \
+        --tag $CI_REGISTRY_IMAGE:complete-build-${VERSION:-latest} \
         .
     - docker push $CI_REGISTRY_IMAGE:complete-build-$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:complete-build-latest
+    - if [ ! -z "$VERSION" ]; then docker push $CI_REGISTRY_IMAGE:complete-build-$VERSION; fi
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main"'
 
 build-docker:
@@ -64,10 +95,17 @@ build-docker:
     - docker:24-dind
   variables:
     DOCKER_HOST: unix:///var/run/docker.sock
+  dependencies:
+    - release
+    - build-complete
   interruptible: true
   before_script:
     # Login to GitLab Container Registry
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    
+    # Load version from release job
+    - if [ -f release.env ]; then source release.env; fi
+    - echo "Building version ${VERSION:-latest}"
 
     # Set up Docker Buildx for multi-platform builds
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
@@ -86,6 +124,7 @@ build-docker:
         --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:cache,mode=max \
         --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA \
         --tag $CI_REGISTRY_IMAGE:latest \
+        --tag $CI_REGISTRY_IMAGE:${VERSION:-latest} \
         --push \
         .
   only:
