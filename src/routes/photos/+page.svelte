@@ -28,13 +28,9 @@
 		baseUrl: '/photos'
 	}));
 
-	onMount(async () => {
-		// Wait for next tick to ensure layout is rendered
-		await tick();
-		// Small delay to let navbar fully render
-		setTimeout(() => {
-			shouldLoadPhotos = true;
-		}, 50);
+	onMount(() => {
+		// Load photos immediately to prevent layout shift
+		shouldLoadPhotos = true;
 	});
 </script>
 
@@ -55,11 +51,11 @@
 			priorityLoadCount={3}
 		/>
 	{:else}
-		<!-- Loading placeholder that doesn't block layout -->
+		<!-- Static placeholder to prevent layout shift -->
 		<div class="photo-grid-placeholder">
-			<div class="animate-pulse grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+			<div class="placeholder-grid">
 				{#each Array(6) as _, i (i)}
-					<div class="bg-gray-200 aspect-square rounded"></div>
+					<div class="placeholder-item"></div>
 				{/each}
 			</div>
 		</div>
@@ -72,9 +68,36 @@
 		padding: 1rem;
 	}
 
+	.placeholder-grid {
+		column-count: 2;
+		column-gap: 1rem;
+		column-fill: balance;
+	}
+
+	.placeholder-item {
+		background: #f0f0f0;
+		aspect-ratio: 1/1.4; /* Typical photo ratio */
+		width: 100%;
+		margin-bottom: 1rem;
+		break-inside: avoid;
+		display: inline-block;
+		border-radius: 4px;
+	}
+
 	@media (min-width: 768px) {
 		.photo-grid-placeholder {
 			padding: 1.5rem;
+		}
+	}
+
+	@media (min-width: 1025px) {
+		.placeholder-grid {
+			column-count: 3;
+			column-gap: 1.5rem;
+		}
+
+		.placeholder-item {
+			margin-bottom: 1.5rem;
 		}
 	}
 </style>

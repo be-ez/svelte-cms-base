@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
-	import { BREAKPOINTS, getGalleryImageSize, viewport } from '$lib/stores/viewport';
+	import { getGalleryImageSize } from '$lib/stores/viewport';
 
 	export let items: {
 		slug: string;
@@ -27,10 +27,13 @@
 		return null;
 	}
 
-	// Reorganize items for row-based masonry ordering
-	function reorganizeForRowOrder(itemsToReorganize: typeof items, columnCount: number) {
+	// Reorganize items for row-based masonry ordering (newest items first)
+	// This ensures newest content appears at the top in a natural reading pattern
+	function reorganizeForRowOrder(itemsToReorganize: typeof items) {
 		if (!isPinterestStyle) return itemsToReorganize;
 
+		// Use fixed column count to avoid reactive recalculations
+		const columnCount = 3; // Will be responsive via CSS
 		const result = [];
 		const chunks = [];
 
@@ -51,15 +54,11 @@
 		return result;
 	}
 
-	// Get current column count based on centralized breakpoints
-	$: columnCount =
-		$viewport.width <= BREAKPOINTS.mobile ? 2 : $viewport.width <= BREAKPOINTS.laptop ? 2 : 3;
-
-	// Get responsive image size for gallery
+	// Get responsive image size for gallery - cached to prevent recalculations
 	$: imageSize = $getGalleryImageSize;
 
-	// Reorganized items for proper row ordering
-	$: reorganizedItems = reorganizeForRowOrder(items, columnCount);
+	// Reorganized items for proper row ordering - computed once, not reactive to viewport
+	$: reorganizedItems = reorganizeForRowOrder(items);
 </script>
 
 <div class="m-0 p-0">
@@ -85,7 +84,7 @@
 								className="block m-0 p-0"
 								aspectRatio={isPinterestStyle ? undefined : '1/1'}
 								objectFit={isPinterestStyle ? 'scale-down' : 'cover'}
-								rootMargin={index < eagerLoadCount ? '200px' : '50px'}
+								rootMargin="50px"
 								threshold={0.1}
 								defaultSize={imageSize}
 							/>
@@ -132,11 +131,11 @@
 
 	.photo-grid:not(.is-pinterest) {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(2, 1fr);
 	}
 
 	.photo-grid.is-pinterest {
-		column-count: 3;
+		column-count: 2;
 		column-gap: 1rem;
 		column-fill: balance;
 	}
@@ -199,30 +198,17 @@
 			gap: 1.5rem;
 		}
 
+		.photo-grid:not(.is-pinterest) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
 		.photo-grid.is-pinterest {
+			column-count: 3;
 			column-gap: 1.5rem;
 		}
 
 		.photo-grid.is-pinterest .photo-item {
 			margin-bottom: 1.5rem;
-		}
-	}
-
-	@media (max-width: 1024px) {
-		.photo-grid:not(.is-pinterest) {
-			grid-template-columns: repeat(3, 1fr);
-		}
-		.photo-grid.is-pinterest {
-			column-count: 2;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.photo-grid:not(.is-pinterest) {
-			grid-template-columns: repeat(2, 1fr);
-		}
-		.photo-grid.is-pinterest {
-			column-count: 2;
 		}
 	}
 </style>
